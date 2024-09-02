@@ -103,8 +103,8 @@ const LoginScreen: NextPage = () => {
                 hookMember.onChangeLoginData('loginPw', e.target.value);
               }}
               onKeyPress={
-                e=>{
-                  if(e.key === "Enter") hookMember.onClickLogin();
+                e => {
+                  if (e.key === "Enter") hookMember.onClickLogin();
                 }
               }
             />
@@ -122,6 +122,22 @@ const LoginScreen: NextPage = () => {
               }}>
               <div css={{ color: 'white', fontSize: 18, lineHeight: '28px' }}>
                 로그인
+              </div>
+            </FlexCenter>
+            <FlexCenter
+              onClick={() => {
+                //
+                hookMember.onClickSignUp();
+              }}
+              css={{
+                backgroundColor: 'orange',
+                padding: 11,
+                marginTop: 16,
+                cursor: 'pointer',
+                borderRadius: 8,
+              }}>
+              <div css={{ color: 'white', fontSize: 18, lineHeight: '28px' }}>
+                회원가입
               </div>
             </FlexCenter>
             <FlexCenter

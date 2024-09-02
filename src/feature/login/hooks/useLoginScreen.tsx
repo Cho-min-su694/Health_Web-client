@@ -19,6 +19,7 @@ interface HookMember {
   debugText: string;
 
   onClickLogin: () => void;
+  onClickSignUp: () => void;
   onChangeLoginData: (type: 'loginId' | 'loginPw', value: string) => void;
 }
 
@@ -55,6 +56,10 @@ export function useLoginScreen(): HookMember {
     setLoginData(clone);
   };
 
+  const onClickSignUp = () => {
+    router.push('/signup');
+  };
+
   const onClickLogin = () => {
     // id,pw를 가져오고 슬라이스의 로그인으로 넘김
     dispatch(accountSlice.login(loginData));
@@ -65,6 +70,7 @@ export function useLoginScreen(): HookMember {
 
     debugText:testServer?.text ?? "-----",
 
+    onClickSignUp,
     onClickLogin,
     onChangeLoginData,
   };

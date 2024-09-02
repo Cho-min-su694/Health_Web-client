@@ -68,7 +68,7 @@ export const MainFooter = () => {
               color: 'white',
               fontSize: 28,
             }}>
-            METAVERSE
+            HEALTH
           </div>
         </FlexCenter>
       </div>

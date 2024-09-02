@@ -87,7 +87,15 @@ export const logout = (): AppThunk => (dispatch, getState) => {
 };
 
 export const signup =
-  (userData: any): AppThunk =>
+  (userData: {
+    loginId: string;
+    loginPw: string;
+    username: string;
+    nickname: string;
+    loginType: LoginType;
+    userType: UserType;
+    phone: string;
+  }): AppThunk =>
   async (dispatch, getState) => {
     return await fetch(rootUrl + '/signup', {
       method: 'POST',
@@ -109,7 +117,7 @@ export const signup =
 
 
 export type LoginType = 'LOCAL' | 'ADMIN';
-export type UserType = 'GENERAL' | 'ADMIN' | 'MANAGER';
+export type UserType = 'GENERAL' | 'BUSINESS' | 'ADMIN' | 'MANAGER';
 export interface User {
   id: number;
   createdAt?: Date;
