@@ -142,6 +142,21 @@ const LoginScreen: NextPage = () => {
             </FlexCenter>
             <FlexCenter
               css={{
+                padding: 11,
+                marginTop: 16,
+              }}>
+              <div 
+                onClick={() => {
+                  //
+                  hookMember.onClickBusinessSignUp();
+                }}
+                css={{ color: 'orange', fontSize: 18, lineHeight: '28px', cursor: 'pointer', }}
+              >
+                비즈니스로 회원가입
+              </div>
+            </FlexCenter>
+            <FlexCenter
+              css={{
                 marginTop: 50,
                 marginBottom: 50,
               }}>

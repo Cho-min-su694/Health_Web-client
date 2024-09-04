@@ -20,6 +20,7 @@ interface HookMember {
 
   onClickLogin: () => void;
   onClickSignUp: () => void;
+  onClickBusinessSignUp: () => void;
   onChangeLoginData: (type: 'loginId' | 'loginPw', value: string) => void;
 }
 
@@ -59,6 +60,9 @@ export function useLoginScreen(): HookMember {
   const onClickSignUp = () => {
     router.push('/signup');
   };
+  const onClickBusinessSignUp = () => {
+    router.push('/signup?business=True');
+  };
 
   const onClickLogin = () => {
     // id,pw를 가져오고 슬라이스의 로그인으로 넘김
@@ -72,6 +76,7 @@ export function useLoginScreen(): HookMember {
 
     onClickSignUp,
     onClickLogin,
+    onClickBusinessSignUp,
     onChangeLoginData,
   };
 }

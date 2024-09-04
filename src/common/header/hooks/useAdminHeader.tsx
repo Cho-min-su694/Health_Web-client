@@ -23,6 +23,7 @@ interface hookMember {
 
 export const navArray = [
   // { title: '결제관리', name: '전체조회', url: '/admin/payment' },
+  { title: '기구관리', name: '기구관리', url: '/admin/bodypart' },
   { title: '유저관리', name: '유저관리', url: '/admin/user' },
 ];
 
@@ -69,6 +70,8 @@ export function useAdminHeader(): hookMember {
     onClickMenu: (item) => {
       if (item === '유저관리') {
         router.push('/admin/user');
+      } else if (item === '기구관리') {
+        router.push('/admin/bodypart');
       }
     },
     onClickSubMenu: (active: string) => {

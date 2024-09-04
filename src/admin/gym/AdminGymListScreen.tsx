@@ -9,9 +9,8 @@ import { Flex, FlexRow, FlexRowCenter } from 'src/common/styledComponents';
 import AdminTable from 'src/common/table/AdminTable';
 import { fenxyBlue } from 'src/util/constants/style';
 import {
-    SearchUserTypeArray,
-    useAdminUserScreen,
-} from './hooks/useAdminUserScreen';
+    useAdminGymListScreen,
+} from './hooks/useAdminGymListScreen';
 import GetSeoulTime from 'src/common/time/GetSeoulTime';
 import { User } from 'src/api/usersApi';
 
@@ -31,8 +30,8 @@ const btnCheckBoxStyle = {
     },
 };
 
-const AdminUserScreen = () => {
-    const hookMember = useAdminUserScreen();
+const AdminGymListScreen = () => {
+    const hookMember = useAdminGymListScreen();
     return (
         <div css={{ backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
             <AdminHeader active={'회원관리'} activeItem={'회원관리'} />
@@ -95,9 +94,9 @@ const AdminUserScreen = () => {
                                     hookMember.onChangeSearchType(e.target.value);
                                 }}>
                                 {/* <option value="없음">없음</option> */}
-                                <option value="닉네임">닉네임</option>
-                                <option value="아이디">아이디</option>
-                                <option value="이름">이름</option>
+                                <option value="닉네임">헬스장명</option>
+                                <option value="아이디">관장명</option>
+                                <option value="이름">닉네임</option>
                             </select>
                             <InputStyle
                                 type="text"
@@ -117,39 +116,6 @@ const AdminUserScreen = () => {
                                 검색
                             </StyledButton>
                         </FlexRow>
-                        <FlexRow
-                            css={{
-                                minHeight: 60,
-                                alignItems: 'center',
-                                borderBottom: '1px solid #eee',
-                            }}>
-                            <div
-                                css={{
-                                    minWidth: 150,
-                                    paddingLeft: 30,
-                                }}>
-                                유형
-                            </div>
-                            {SearchUserTypeArray.map((el, i) => (
-                                <div
-                                    css={btnCheckBoxStyle}
-                                    onClick={() => hookMember.onClickUserType(el)}
-                                    key={i.toString()}
-                                    className={hookMember.userType === el ? 'active' : ''}>
-                                    {el === 'MANAGER'
-                                        ? '매니저'
-                                        : el === 'ADMIN'
-                                            ? '관리자'
-                                            : el === 'GENERAL'
-                                                ? '일반회원'
-                                                : el === 'BUSINESS'
-                                                    ? '관장'
-                                                    : el === '전체'
-                                                        ? '전체'
-                                                        : undefined}
-                                </div>
-                            ))}
-                        </FlexRow>
                     </Flex>
                 </BorderRoundedContent>
 
@@ -161,45 +127,6 @@ const AdminUserScreen = () => {
                                 alignItems: 'flex-end',
                                 height: 32,
                             }}>
-                            {/* <FlexRow
-                css={{
-                  flexGrow: 1,
-                  fontSize: 14,
-                  '>div': {
-                    marginRight: 10,
-                    color: '#999',
-                    cursor: 'pointer',
-                  },
-                  '>div:hover, >div.active': {
-                    color: '#222',
-                  },
-                }}>
-                <div
-                  className={`${hookMember.tableTitle === 'user' && 'active'}`}
-                  onClick={() => {
-                    hookMember.onClickChangeTable('user');
-                  }}>
-                  전체회원 {hookMember.user.length}
-                </div>
-                <div
-                  className={`${
-                    hookMember.tableTitle === 'general' && 'active'
-                  }`}
-                  onClick={() => {
-                    hookMember.onClickChangeTable('general');
-                  }}>
-                  일반회원 {hookMember.general.length}
-                </div>
-                <div
-                  className={`${
-                    hookMember.tableTitle === 'business' && 'active'
-                  }`}
-                  onClick={() => {
-                    hookMember.onClickChangeTable('business');
-                  }}>
-                  사업자회원 {hookMember.business.length}
-                </div>
-              </FlexRow> */}
                         </FlexRow>
                         <Flex css={{ paddingTop: 20 }}>
                             <AdminTable

@@ -9,6 +9,8 @@ import * as accountSlice from 'src/data/accountSlice';
 interface hookMember {
   loading: boolean;
 
+  isBusiness:boolean;
+
   generalUserDataErrorDisplayState: 'flex' | 'none';
   generalUserData: GeneralUserData;
   errorMessage: any;
@@ -38,6 +40,7 @@ interface hookMember {
       | 'phone',
     value: string,
   ) => void;
+  checkSignUpInform: () => boolean;
   onClickSignup: () => void;
 
   onClickGeneralUserDataErrorModal: () => void;
@@ -58,12 +61,20 @@ export function useSignupScreen(): hookMember {
     phone: '',
   });
 
+  const [isBusiness, setIsBussiness] = useState<boolean>(false);
+
   useEffect(() => {
     console.log(router.query.code);
     if (router.query.code) {
       setLoading(true);
     }
   }, [router.query.code]);
+
+  useEffect(() => {
+    if (router.query.business != undefined) {
+      setIsBussiness(true);
+    }
+  }, [router.query.business]);
 
   const [
     generalUserDataErrorDisplayState,
@@ -127,7 +138,7 @@ export function useSignupScreen(): hookMember {
     setGeneralUserData(clone);
   };
 
-  const onClickSignup = async () => {
+  const checkSignUpInform = ():boolean => {
     // TODO 회원가입 검사 내용 필요
     // 아이디 중복 검사
     // 아이디 글자수 검사
@@ -144,7 +155,7 @@ export function useSignupScreen(): hookMember {
         </div>,
       );
       setGeneralUserDataErrorDisplayState('flex');
-      return;
+      return false;
     }
 
     if (
@@ -158,7 +169,7 @@ export function useSignupScreen(): hookMember {
         </div>,
       );
       setGeneralUserDataErrorDisplayState('flex');
-      return;
+      return false;
     }
 
     if (duplicateId) {
@@ -170,7 +181,7 @@ export function useSignupScreen(): hookMember {
         </div>,
       );
       setGeneralUserDataErrorDisplayState('flex');
-      return;
+      return false;
     }
     // 비밀번호 글자수 검사
     // 비밀번호 특수문자 숫자 등 검사
@@ -187,7 +198,7 @@ export function useSignupScreen(): hookMember {
         </div>,
       );
       setGeneralUserDataErrorDisplayState('flex');
-      return;
+      return false;
     }
     else {
       console.log('통과')
@@ -204,7 +215,7 @@ export function useSignupScreen(): hookMember {
         </div>,
       );
       setGeneralUserDataErrorDisplayState('flex');
-      return;
+      return false;
     }
     else {
       console.log('통과')
@@ -221,8 +232,15 @@ export function useSignupScreen(): hookMember {
       );
       setGeneralUserDataErrorDisplayState('flex');
 
-      return;
+      return false;
     }
+
+    return true;
+  }
+
+  const onClickSignup = async () => {
+
+    if(!checkSignUpInform()) return;
 
     await dispatch(
       accountSlice.signup({
@@ -243,6 +261,8 @@ export function useSignupScreen(): hookMember {
 
   return {
     loading,
+
+    isBusiness,
 
     generalUserData,
     generalUserDataErrorDisplayState,
@@ -353,12 +373,12 @@ export function useSignupScreen(): hookMember {
     onChangeGeneralNickname: () => {
       setDuplicateNickname(true);
     },
-
+    checkSignUpInform,
     onClickSignup,
   };
 }
 
-interface GeneralUserData {
+export interface GeneralUserData {
   userId: string;
   password: string;
   repassword: string;

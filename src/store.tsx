@@ -12,12 +12,16 @@ import { Store, Action, combineReducers } from 'redux';
 import { examplesApi } from './api/examplesApi';
 import accountSlice from './data/accountSlice';
 import { usersApi } from './api/usersApi';
+import { gymsApi } from './api/gymsApi';
+import { bodyPartsApi } from './api/bodyPartsApi';
 
 const initialState = {};
 
 const reducer = combineReducers({
     [examplesApi.reducerPath]: examplesApi.reducer,
     [usersApi.reducerPath]: usersApi.reducer,
+    [gymsApi.reducerPath]: gymsApi.reducer,
+    [bodyPartsApi.reducerPath]: bodyPartsApi.reducer,
     account: accountSlice,
 });
 
@@ -31,6 +35,8 @@ function initStore(preloadedState = initialState): Store<RootState> {
       getDefaultMiddleware()
       .concat(examplesApi.middleware)
       .concat(usersApi.middleware)
+      .concat(gymsApi.middleware)
+      .concat(bodyPartsApi.middleware)
     ,
     devTools: process.env.NODE_ENV !== 'production',
   });

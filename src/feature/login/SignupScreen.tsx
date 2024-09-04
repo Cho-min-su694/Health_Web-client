@@ -7,11 +7,16 @@ import { useSignupScreen } from './hooks/useSignupScreen';
 import Link from 'next/link';
 import { lowBlack } from 'src/util/constants/style';
 import BasicModal from 'src/common/modal/BasicModal';
+import { useSearchParams } from 'next/navigation';
+import BusinessInfoWrite from './BusinessInfoWrite';
 
 const underTextCss = { marginLeft: 12, fontSize: 12, color: '#999', marginTop: 4, }
 
 const SignupScreen: NextPage = () => {
   const hookMember = useSignupScreen();
+
+  const params = useSearchParams();
+
   if (hookMember.loading) {
     return (
       <Flex css={{ flex: 1, backgroundColor: 'white' }}>
@@ -364,7 +369,8 @@ const SignupScreen: NextPage = () => {
             <div css={{ ...underTextCss }}>
               휴대폰 번호를 입력해주세요.
             </div>}
-          <FlexCenter
+          { !hookMember.isBusiness ?
+            <FlexCenter
             onClick={() => {
               //
               hookMember.onClickSignup();
@@ -379,8 +385,12 @@ const SignupScreen: NextPage = () => {
             <div css={{ color: 'white', fontSize: 18, lineHeight: '28px' }}>
               회원가입
             </div>
-          </FlexCenter>
+          </FlexCenter> : undefined}
         </ContentFlex>
+        {hookMember.isBusiness ?
+          <BusinessInfoWrite checkSignUpInform={hookMember.checkSignUpInform} generalUserData={hookMember.generalUserData} />
+          : undefined
+        }
       </Flex>
       <MainFooter />
     </Flex>

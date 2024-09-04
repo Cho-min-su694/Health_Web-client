@@ -199,6 +199,7 @@ const AdminHeader = ({
               // '에셋관리',
               // '월드관리',
               // '재화관리',
+              '기구관리',
               '유저관리',
           ].map((item, index) => {
           return (

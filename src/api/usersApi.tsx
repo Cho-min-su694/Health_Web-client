@@ -223,7 +223,7 @@ export const createUser = async (body: User) => {
 
 // NOTE User에 대한 타입
 export type LoginType = 'LOCAL' | 'ADMIN';
-export type UserType = 'GENERAL' | 'ADMIN' | 'MANAGER';
+export type UserType = 'GENERAL' | 'BUSINESS' | 'ADMIN' | 'MANAGER';
 export type UserTypeOrNoLogin = UserType | 'NoLogin';
 
 export interface User {
@@ -235,6 +235,7 @@ export interface User {
     loginType: LoginType;
     userType: UserType;
     nickname: string;
+    phone:string;
 }
 // NOTE AccessToken에 대한 타입
 export type AccessToken = string;
@@ -247,4 +248,5 @@ export type UserUpdateInput = {
     loginType?: LoginType;
     userType?: UserType;
     nickname?: string;
+    phone?: string;
 };

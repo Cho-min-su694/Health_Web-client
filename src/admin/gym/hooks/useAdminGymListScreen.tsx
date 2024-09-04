@@ -49,7 +49,7 @@ interface hookMember {
 
 }
 
-export function useAdminUserScreen(): hookMember {
+export function useAdminGymListScreen(): hookMember {
   // const { data: userData, refetch: userRefetch } = useFindAllUserQuery();
   const adminId = Number(useTypedSelector((state) => state.account.user?.id || -1));
   const [findAdminAllUser] = useFindAdminAllUsersMutation();
@@ -267,6 +267,5 @@ export const SearchUserTypeArray: SearchUserType[] = [
   '전체',
   'ADMIN',
   'MANAGER',
-  'GENERAL',
-  'BUSINESS'
+  'GENERAL'
 ];
