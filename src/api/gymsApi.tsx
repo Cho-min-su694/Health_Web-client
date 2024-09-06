@@ -71,13 +71,66 @@ export const gymsApi = createApi({
         body: arg.body,
       }),
     }),
+
+    upsertGymImage: builder.mutation<
+      GymImage,
+      {
+        gymId: number,
+        form: FormData,
+      }
+    >({
+      query: (arg) => ({
+        method: 'PATCH',
+        url: `${arg.gymId}/image`,
+        form: arg.form,
+      }),
+    }),
+
+    // NOTE 관리자 회원 상세
+    findGym: builder.query<Gym, { id: number }>({
+      query: (arg) => ({
+        method: 'GET',
+        url: `${arg.id}`,
+      }),
+    }),
+    findAdminAllGyms: builder.mutation<
+      { count: number; data: Gym[]; userCount: { [key: string]: number } },
+      {
+        page: number;
+        take: number;
+        searchType?: string;
+        searchText?: string;
+      }
+    >({
+      query: (arg) => ({
+        method: 'GET',
+        url: `admin?page=${arg.page}&take=${arg.take}&searchType=${arg.searchType}&searchText=${arg.searchText}`,
+      }),
+    }),
+
+
+    // 개별 삭제
+    removeGymByAdmin: builder.mutation<
+      Gym,
+      {
+        adminId: number;
+        id: number;
+      }
+    >({
+      query: (arg) => ({
+        method: 'DELETE',
+        url: `admin?adminId=${arg.adminId}&id=${arg.id}`,
+      }),
+    }),
+
+
   }),
 });
 
-export const { useCreateGymImageMutation, useCreateGymInfoMutation, useUpdateGymByIdMutation, useFindDuplicateGymDataMutation } = gymsApi;
+export const { useCreateGymImageMutation, useCreateGymInfoMutation, useUpdateGymByIdMutation, useFindDuplicateGymDataMutation, useFindAdminAllGymsMutation, useRemoveGymByAdminMutation, useFindGymQuery, useUpsertGymImageMutation } = gymsApi;
 
 export type Gym = {
-  id?:number
+  id?: number
   createdAt?: Date | string
   ceoName: string
   companyName: string
@@ -138,4 +191,4 @@ export type GymUpdateInput = {
   isDisable?: boolean
 };
 
-export type GymImage = {}|ImageType;
+export type GymImage = {} & ImageType;

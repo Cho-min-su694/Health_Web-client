@@ -233,11 +233,11 @@ const BusinessInfoWrite = ({
               <FlexRow>
                 <input
                   type="file"
-                  id="businessNumberPhoto"
+                  id="gymPhoto"
                   css={{ display: 'none' }}
                   onChange={hookMember.onChangeGymPhoto}
                 />
-                <label htmlFor="businessNumberPhoto" css={{ flex: 1 }}>
+                <label htmlFor="gymPhoto" css={{ flex: 1 }}>
                   <FlexCenter
                     css={{
                       height: 40,

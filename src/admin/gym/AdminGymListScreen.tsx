@@ -13,6 +13,7 @@ import {
 } from './hooks/useAdminGymListScreen';
 import GetSeoulTime from 'src/common/time/GetSeoulTime';
 import { User } from 'src/api/usersApi';
+import { Gym } from 'src/api/gymsApi';
 
 const btnCheckBoxStyle = {
     width: 120,
@@ -34,7 +35,7 @@ const AdminGymListScreen = () => {
     const hookMember = useAdminGymListScreen();
     return (
         <div css={{ backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
-            <AdminHeader active={'회원관리'} activeItem={'회원관리'} />
+            <AdminHeader active={'헬스장관리'} activeItem={'헬스장관리'} />
             <div css={{ marginLeft: 240, padding: 20, minWidth: 1100 }}>
                 <FlexRow
                     css={{
@@ -50,13 +51,13 @@ const AdminGymListScreen = () => {
                             flexGrow: 1,
                             lineHeight: '32px',
                         }}>
-                        회원관리
+                        헬스장관리
                     </div>
                     <FlexRow>
                         <StyledButton
                             onClick={hookMember.onClickRouteCreate}
                             css={{ background: fenxyBlue }}>
-                            유저 추가
+                            헬스장 추가
                         </StyledButton>
                         {/* <StyledButton
               onClick={() => hookMember.onClickDeleteChecked()}
@@ -94,9 +95,10 @@ const AdminGymListScreen = () => {
                                     hookMember.onChangeSearchType(e.target.value);
                                 }}>
                                 {/* <option value="없음">없음</option> */}
-                                <option value="닉네임">헬스장명</option>
-                                <option value="아이디">관장명</option>
-                                <option value="이름">닉네임</option>
+                                <option value="헬스장명">헬스장명</option>
+                                <option value="관장명">관장명</option>
+                                <option value="닉네임">닉네임</option>
+                                <option value="아이디">아이디</option>
                             </select>
                             <InputStyle
                                 type="text"
@@ -134,115 +136,47 @@ const AdminGymListScreen = () => {
                                 page={hookMember.page}
                                 setPage={hookMember.setPage}
                                 take={hookMember.take}
-                                categories={[
-                                    { title: '운영 회원' },
-                                    {
-                                        name: '관리자',
-                                        value: hookMember.userTypeCount?.['ADMIN'] || 0,
-                                    },
-                                    {
-                                        name: '매니저',
-                                        value: hookMember.userTypeCount?.['MANAGER'] || 0,
-                                    },
-                                    { title: '/' },
-                                    {
-                                        name: '일반회원',
-                                        value: hookMember.userTypeCount?.['GENERAL'] || 0,
-                                    },
-                                ]}
                                 headers={[
-                                    // {
-                                    //   // name: '선택',
-                                    //   name: (
-                                    //     <Flex>
-                                    //       <label
-                                    //         htmlFor={`product_all`}
-                                    //         onClick={hookMember.onClickCheckAll}>
-                                    //         <Image
-                                    //           src={`/image/admin/icon/check-square-${
-                                    //             hookMember.deleteUserArray.length ===
-                                    //             hookMember.table.length
-                                    //               ? 'fill'
-                                    //               : 'empty'
-                                    //           }.png`}
-                                    //           width="20"
-                                    //           height="20"
-                                    //           alt="checkbox"
-                                    //         />
-                                    //       </label>
-                                    //       <input
-                                    //         type="checkbox"
-                                    //         id="product_all"
-                                    //         css={{ display: 'none' }}
-                                    //       />
-                                    //     </Flex>
-                                    //   ),
-                                    //   maxWidth: 100,
-                                    //   cell: (e: any) => {
-                                    //     return (
-                                    //       <Flex>
-                                    //         <label
-                                    //           htmlFor={`product_${e.data.id}`}
-                                    //           onClick={() => hookMember.onClickCheckItem(e.data)}>
-                                    //           <Image
-                                    //             src={`/image/admin/icon/check-square-${
-                                    //               hookMember.deleteUserArray.includes(e.data)
-                                    //                 ? 'fill'
-                                    //                 : 'empty'
-                                    //             }.png`}
-                                    //             width="20"
-                                    //             height="20"
-                                    //             alt="checkbox"
-                                    //           />
-                                    //         </label>
-                                    //         <input
-                                    //           type="checkbox"
-                                    //           id={`product_${e.data.id}`}
-                                    //           css={{ display: 'none' }}
-                                    //         />
-                                    //       </Flex>
-                                    //     );
-                                    //   },
-                                    // },
+                                    {
+                                        name: '헬스장명',
+                                        selector: 'companyName',
+                                        minWidth:200,
+                                        cell: ({ data }: { data: Gym }) => {
+                                            return <>{data.companyName}</>;
+                                        },
+                                    },
                                     {
                                         name: '아이디',
                                         selector: 'loginId',
                                         cell: ({ data }: { data: any }) => {
-                                            return <>{data.loginId}</>;
+                                            return <>{data.User.loginId}</>;
                                         },
                                     },
                                     {
                                         name: '닉네임',
                                         selector: 'nickname',
-                                        cell: ({ data }: { data: User }) => {
+                                        cell: ({ data }: { data: any }) => {
                                             console.log(data);
                                             return (
                                                 <div>
-                                                    {data.nickname}
+                                                    {data.User.nickname}
                                                 </div>
                                             );
                                         },
                                     },
                                     {
-                                        name: '이름',
+                                        name: '관장명',
                                         selector: 'username',
                                         cell: ({ data }: { data: any }) => {
-                                            return <>{data.username}</>;
+                                            return <>{data.ceoName}</>;
                                         },
                                     },
                                     {
-                                        name: '구분',
-                                        selector: 'userType',
-                                        cell: ({ data }: { data: any }) => {
-                                            let type = '-';
-                                            if (data.userType === 'ADMIN') {
-                                                type = '관리자';
-                                            } else if (data.userType === 'GENERAL') {
-                                                type = '일반회원';
-                                            } else if (data.userType === 'MANAGER') {
-                                                type = '매니저';
-                                            }
-                                            return <>{type}</>;
+                                        name: '지역',
+                                        selector: 'mainAddress',
+                                        minWidth: 250,
+                                        cell: ({ data }: { data: Gym }) => {
+                                            return <>{data.mainAddress}</>;
                                         },
                                     },
                                     {
@@ -293,4 +227,4 @@ const AdminGymListScreen = () => {
     );
 };
 
-export default AdminUserScreen;
+export default AdminGymListScreen;

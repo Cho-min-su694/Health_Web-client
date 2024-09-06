@@ -257,7 +257,7 @@ export function useBusinessInfoWrite({
       setBasicModalDisplayState('flex');
       return;
     }
-    // NOTE 사업자 등록증 이미지 검사
+    // NOTE 헬스장 이미지 검사
     if (!gymPhoto) {
       setBasicModalContent(
         <div css={{ textAlign: 'center' }}>

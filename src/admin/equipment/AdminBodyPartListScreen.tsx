@@ -33,7 +33,7 @@ const AdminBodyPartListScreen = () => {
         onCloseDisplay={hookMember.onClickDetailModal}
         setModifyData={hookMember.onChangeModifyData}
       />
-      <AdminHeader active={'운동부위'} activeItem={'운동부위 관리'} />
+      <AdminHeader active={'기구관리'} activeItem={'운동부위 관리'} />
       <div css={{ marginLeft: 240, padding: 20, minWidth: 1100 }}>
         <Flex>
           <div>

@@ -161,45 +161,6 @@ const AdminUserScreen = () => {
                                 alignItems: 'flex-end',
                                 height: 32,
                             }}>
-                            {/* <FlexRow
-                css={{
-                  flexGrow: 1,
-                  fontSize: 14,
-                  '>div': {
-                    marginRight: 10,
-                    color: '#999',
-                    cursor: 'pointer',
-                  },
-                  '>div:hover, >div.active': {
-                    color: '#222',
-                  },
-                }}>
-                <div
-                  className={`${hookMember.tableTitle === 'user' && 'active'}`}
-                  onClick={() => {
-                    hookMember.onClickChangeTable('user');
-                  }}>
-                  전체회원 {hookMember.user.length}
-                </div>
-                <div
-                  className={`${
-                    hookMember.tableTitle === 'general' && 'active'
-                  }`}
-                  onClick={() => {
-                    hookMember.onClickChangeTable('general');
-                  }}>
-                  일반회원 {hookMember.general.length}
-                </div>
-                <div
-                  className={`${
-                    hookMember.tableTitle === 'business' && 'active'
-                  }`}
-                  onClick={() => {
-                    hookMember.onClickChangeTable('business');
-                  }}>
-                  사업자회원 {hookMember.business.length}
-                </div>
-              </FlexRow> */}
                         </FlexRow>
                         <Flex css={{ paddingTop: 20 }}>
                             <AdminTable
@@ -224,59 +185,6 @@ const AdminUserScreen = () => {
                                     },
                                 ]}
                                 headers={[
-                                    // {
-                                    //   // name: '선택',
-                                    //   name: (
-                                    //     <Flex>
-                                    //       <label
-                                    //         htmlFor={`product_all`}
-                                    //         onClick={hookMember.onClickCheckAll}>
-                                    //         <Image
-                                    //           src={`/image/admin/icon/check-square-${
-                                    //             hookMember.deleteUserArray.length ===
-                                    //             hookMember.table.length
-                                    //               ? 'fill'
-                                    //               : 'empty'
-                                    //           }.png`}
-                                    //           width="20"
-                                    //           height="20"
-                                    //           alt="checkbox"
-                                    //         />
-                                    //       </label>
-                                    //       <input
-                                    //         type="checkbox"
-                                    //         id="product_all"
-                                    //         css={{ display: 'none' }}
-                                    //       />
-                                    //     </Flex>
-                                    //   ),
-                                    //   maxWidth: 100,
-                                    //   cell: (e: any) => {
-                                    //     return (
-                                    //       <Flex>
-                                    //         <label
-                                    //           htmlFor={`product_${e.data.id}`}
-                                    //           onClick={() => hookMember.onClickCheckItem(e.data)}>
-                                    //           <Image
-                                    //             src={`/image/admin/icon/check-square-${
-                                    //               hookMember.deleteUserArray.includes(e.data)
-                                    //                 ? 'fill'
-                                    //                 : 'empty'
-                                    //             }.png`}
-                                    //             width="20"
-                                    //             height="20"
-                                    //             alt="checkbox"
-                                    //           />
-                                    //         </label>
-                                    //         <input
-                                    //           type="checkbox"
-                                    //           id={`product_${e.data.id}`}
-                                    //           css={{ display: 'none' }}
-                                    //         />
-                                    //       </Flex>
-                                    //     );
-                                    //   },
-                                    // },
                                     {
                                         name: '아이디',
                                         selector: 'loginId',
