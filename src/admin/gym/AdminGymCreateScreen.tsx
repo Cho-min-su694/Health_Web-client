@@ -3,15 +3,20 @@ import AdminHeader from 'src/common/header/AdminHeader';
 import BasicModal from 'src/common/modal/BasicModal';
 import {
     BorderRoundedContent,
+    ContentHeader,
     InputStyle,
     StyledButton,
     TheadSmall,
 } from 'src/common/styledAdmin';
-import { Flex, FlexCenter, FlexRow } from 'src/common/styledComponents';
-import { fenxyBlue } from 'src/util/constants/style';
+import { ContentFlex, Flex, FlexCenter, FlexRow } from 'src/common/styledComponents';
+import AdminTable from 'src/common/table/AdminTable';
+import GetSeoulTime from 'src/common/time/GetSeoulTime';
+import { mediumBlack, fenxyBlue } from 'src/util/constants/style';
 import { useAdminGymCreateScreen } from './hooks/useAdminGymCreateScreen';
+import DaumPostcode from 'react-daum-postcode';
+import Image from 'next/image';
 
-const AdminUserGymCreateScreen = () => {
+const AdminGymCreateScreen = () => {
     const hookMember = useAdminGymCreateScreen();
     const btnCheckBoxStyle = {
         width: 160,
@@ -21,16 +26,17 @@ const AdminUserGymCreateScreen = () => {
         display: 'inline-flex',
         justifyContent: 'center',
         color: '#999',
-        cursor: 'pointer',
+        // cursor: 'pointer',
         '&.active': {
             background: fenxyBlue,
             borderColor: fenxyBlue,
             color: 'white',
         },
+        cursor: 'pointer'
     };
     return (
         <div css={{ backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
-            <AdminHeader active={'회원관리'} activeItem={'회원관리'} />
+            <AdminHeader active={'헬스장관리'} activeItem={'헬스장관리'} />
             <div css={{ marginLeft: 240, padding: 20, minWidth: 1100 }}>
                 <FlexRow
                     css={{
@@ -46,17 +52,28 @@ const AdminUserGymCreateScreen = () => {
                             flexGrow: 1,
                             lineHeight: '32px',
                         }}>
-                        직원 추가
+                        회원관리
                     </div>
                     <FlexRow>
+                        {/* {hookMember.user?.userType === 'BUSINESS' ? (
+              <>
+                <StyledButton css={{ background: yoksuriBlue }}>
+                  승인
+                </StyledButton>
+                <StyledButton css={{ background: yoksuriBlue }}>
+                  반려
+                </StyledButton>
+              </>
+            ) : undefined} */}
+
                         <StyledButton
-                            css={{ background: fenxyBlue }}
-                            onClick={hookMember.onClickCreateUser}>
-                            저장
+                            onClick={hookMember.onClickUpdateGym}
+                            css={{ background: fenxyBlue }}>
+                            수정
                         </StyledButton>
                         <StyledButton
                             css={{ backgroundColor: '#4A5864' }}
-                            onClick={hookMember.onClickRouterUser}>
+                            onClick={hookMember.onClickRouterGym}>
                             목록
                         </StyledButton>
                     </FlexRow>
@@ -64,173 +81,266 @@ const AdminUserGymCreateScreen = () => {
 
                 <BorderRoundedContent css={{ padding: 30 }}>
                     <Flex css={{ gap: 20, flexFlow: 'wrap' }}>
-                        <Flex css={{ flex: 1, flexBasis: '100%' }}>
-                            <TheadSmall>
-                                회원분류<span>*</span>
-                            </TheadSmall>
-                            <FlexRow className="notBottomBorder">
-                                <div
-                                    css={btnCheckBoxStyle}
-                                    className={`${hookMember.userType === 'GENERAL' && 'active'
-                                        }`}
-                                    onClick={(e) => {
-                                        hookMember.onChangeUserType('GENERAL')
-                                    }}>
-                                    일반 회원
-                                </div>
-                                <div
-                                    css={btnCheckBoxStyle}
-                                    className={`${hookMember.userType === 'MANAGER' && 'active'
-                                        }`}
-                                    onClick={(e) => {
-                                        hookMember.onChangeUserType('MANAGER')
-                                    }}>
-                                    매니저
-                                </div>
-                            </FlexRow>
-                        </Flex>
                         <Flex css={{ width: 'calc(50% - 15px)' }}>
                             <TheadSmall>
-                                아이디<span>*</span>
-                            </TheadSmall>
-                            <FlexRow css={{ color: '#999', lineHeight: '28px' }}>
-                                <InputStyle
-                                    type="text"
-                                    css={{ flexGrow: 1 }}
-                                    placeholder="아이디"
-                                    value={hookMember.loginId}
-                                    onChange={(e) => {
-                                        hookMember.onChangeLoginId(e.target.value);
-                                    }}
-                                />
-                                <FlexCenter
-                                    onClick={() => hookMember.onClickDiplucateUserId()}
-                                    css={{
-                                        textAlign: 'center',
-                                        border: '1px solid #999',
-                                        color: '#999',
-                                        borderRadius: 15,
-                                        padding: '0 10px',
-                                        fontSize: 12,
-                                        fontWeight: 400,
-                                        cursor: 'pointer',
-                                        whiteSpace: 'nowrap',
-                                    }}>
-                                    중복검사
-                                </FlexCenter>
-                            </FlexRow>
-                            {hookMember.duplicateId && (
-                                <div
-                                    className="notBottomBorder"
-                                    css={{ paddingTop: 8, marginBottom: 0, color: fenxyBlue }}>
-                                    *중복검사를 해주세요.
-                                </div>
-                            )}
-                        </Flex>
-                        <Flex css={{ width: 'calc(50% - 15px)' }}>
-                            <TheadSmall>
-                                비밀번호<span>*</span>
-                            </TheadSmall>
-                            <Flex css={{ color: '#999' }}>
-                                <InputStyle
-                                    type="password"
-                                    placeholder="비밀번호"
-                                    value={hookMember.password}
-                                    onChange={(e) => {
-                                        hookMember.onChangePw(e.target.value);
-                                    }}
-                                />
-                            </Flex>
-                        </Flex>
-                        {/* {hookMember.userType === 'GENERAL' && (
-              <> */}
-                        <Flex css={{ width: 'calc(50% - 15px)' }}>
-                            <TheadSmall>
-                                이름<span>*</span>
+                                헬스장명<span>*</span>
                             </TheadSmall>
                             <Flex css={{ color: '#999' }}>
                                 <InputStyle
                                     type="text"
-                                    placeholder="이름"
-                                    value={hookMember.name}
-                                    onChange={(e) => {
-                                        hookMember.onChangeName(e.target.value)
-                                        // hookMember.onChangeUserData('username', e.target.value);
-                                    }}
+                                    value={hookMember.companyName}
+                                    onChange={(e) => hookMember.onChangeCompanyName(e.target.value)}
                                 />
                             </Flex>
                         </Flex>
                         <Flex css={{ width: 'calc(50% - 15px)' }}>
                             <TheadSmall>
-                                비밀번호 확인<span>*</span>
+                                관장명<span>*</span>
                             </TheadSmall>
                             <Flex css={{ color: '#999' }}>
                                 <InputStyle
-                                    type="password"
-                                    placeholder="비밀번호 확인"
-                                    value={hookMember.repassword}
-                                    onChange={(e) => {
-                                        hookMember.onChangeRePw(e.target.value);
-                                    }}
+                                    type="text"
+                                    value={hookMember.ceoName}
+                                    onChange={(e) => hookMember.onChangeCeoName(e.target.value)}
                                 />
                             </Flex>
                         </Flex>
                         <Flex css={{ width: 'calc(50% - 15px)' }}>
                             <TheadSmall>
-                                별명<span>*</span>
+                                사업자번호<span>*</span>
                             </TheadSmall>
-                            <FlexRow css={{ color: '#999', lineHeight: '28px' }}>
+                            <Flex css={{ color: '#999' }}>
                                 <InputStyle
-                                    css={{
-                                        flexGrow: 1,
-                                    }}
-                                    type="text"
-                                    placeholder="별명"
-                                    onChange={(e) => {
-                                        hookMember.onChangeNickname(e.target.value)
-                                        // hookMember.onChangeUserData('nickname', e.target.value);
-                                    }}
+                                    type="number"
+                                    value={hookMember.businessNumber}
+                                    onChange={(e) => hookMember.onChangeBusinessNumber(e.target.value)}
                                 />
-                                <FlexCenter
-                                    onClick={() => hookMember.onClickDiplucateNickname()}
-                                    css={{
-                                        textAlign: 'center',
-                                        border: '1px solid #999',
-                                        color: '#999',
-                                        borderRadius: 15,
-                                        padding: '0 10px',
-                                        fontSize: 12,
-                                        fontWeight: 400,
-                                        cursor: 'pointer',
-                                        whiteSpace: 'nowrap',
-                                    }}>
-                                    중복검사
-                                </FlexCenter>
-                            </FlexRow>
-                            {hookMember.duplicateNickname && (
-                                <div
-                                    className="notBottomBorder"
-                                    css={{
-                                        paddingTop: 8,
-                                        marginBottom: 0,
-                                        color: fenxyBlue,
-                                    }}>
-                                    *중복검사를 해주세요.
-                                </div>
-                            )}
+                            </Flex>
                         </Flex>
-                        {/* </>
-            )} */}
+                        <Flex css={{ width: 'calc(50% - 15px)' }}>
+                            <TheadSmall>헬스장 전화번호</TheadSmall>
+                            <Flex css={{ color: '#999' }}>
+                                <InputStyle
+                                    type="number"
+                                    value={hookMember.companyPhone}
+                                    onChange={(e) => hookMember.onChangeCompanyPhone(e.target.value)}
+                                />
+                            </Flex>
+                        </Flex>
+                        <Flex css={{ width: 'calc(50% - 15px)' }}>
+                            <TheadSmall>주소</TheadSmall>
+                            <FlexRow>
+                                <div css={{ flexGrow: 1, flexShrink: 1 }}>
+                                    <FlexRow>
+                                        <div css={{ flexGrow: 1, flexShrink: 1 }}>
+                                            <input
+                                                type="text"
+                                                placeholder="사업장주소"
+                                                disabled
+                                                css={{
+                                                    padding: 10,
+                                                    paddingLeft: 12,
+                                                    fontSize: 16,
+                                                    border: '1px solid #ddd',
+                                                    borderRadius: 4,
+                                                    color: '#222',
+                                                    '::placeholder': { color: '#888' },
+                                                    width: '100%',
+                                                }}
+                                                value={hookMember.postCode}
+                                            />
+                                        </div>
+                                        <FlexCenter
+                                            onClick={hookMember.onClickPostCode}
+                                            css={{
+                                                backgroundColor: '#666',
+                                                borderRadius: 4,
+                                                height: 40,
+                                                minWidth: 72,
+                                                marginLeft: 10,
+                                                color: 'white',
+                                                fontSize: 12,
+                                                cursor: 'pointer',
+                                            }}>
+                                            주소 검색
+                                        </FlexCenter>
+                                    </FlexRow>
+                                    <div
+                                        css={{
+                                            marginLeft: 12,
+                                            fontSize: 12,
+                                            color: '#999',
+                                            marginTop: 4,
+                                        }}>
+                                        우편번호
+                                    </div>
+                                    <Flex
+                                        css={{
+                                            marginTop: 10,
+                                        }}>
+                                        <input
+                                            type="text"
+                                            placeholder="주소"
+                                            disabled
+                                            css={{
+                                                padding: 10,
+                                                paddingLeft: 12,
+                                                fontSize: 16,
+                                                border: '1px solid #ddd',
+                                                borderRadius: 4,
+                                                color: '#222',
+                                                '::placeholder': { color: '#888' },
+                                                flexGrow: 1,
+                                                flexShrink: 1,
+                                            }}
+                                            value={hookMember.mainAddress}
+                                        />
+                                    </Flex>
+                                    <Flex
+                                        css={{
+                                            marginTop: 10,
+                                        }}>
+                                        <input
+                                            type="text"
+                                            placeholder="상세주소"
+                                            css={{
+                                                padding: 10,
+                                                paddingLeft: 12,
+                                                fontSize: 16,
+                                                border: '1px solid #ddd',
+                                                borderRadius: 4,
+                                                color: '#222',
+                                                '::placeholder': { color: '#888' },
+                                                flexGrow: 1,
+                                                flexShrink: 1,
+                                            }}
+                                            value={hookMember.subAddress}
+                                            maxLength={40}
+                                            onChange={(e) => {
+                                                hookMember.onChangeSubAddress(e.target.value);
+                                            }}
+                                        />
+                                    </Flex>
+                                </div>
+                            </FlexRow>
+                        </Flex>
+
+                        <Flex css={{ width: 'calc(50% - 15px)' }}>
+                            <TheadSmall>헬스장 긴급번호</TheadSmall>
+                            <Flex css={{ color: '#999' }}>
+                                <InputStyle
+                                    type="number"
+                                    value={hookMember.companyCellPhone}
+                                    onChange={(e) => hookMember.onChangeCompanyCellPhone(e.target.value)}
+                                />
+                            </Flex>
+                        </Flex>
+                        <Flex css={{ width: 'calc(50% - 15px)' }}>
+                            <TheadSmall>팩스 번호</TheadSmall>
+                            <Flex css={{ color: '#999' }}>
+                                <InputStyle
+                                    type="number"
+                                    value={hookMember.companyCellPhone}
+                                    onChange={(e) => hookMember.onChangeCompanyCellPhone(e.target.value)}
+                                />
+                            </Flex>
+                        </Flex>
+                        <Flex css={{ width: 'calc(50% - 15px)' }}>
+                            <TheadSmall>이메일</TheadSmall>
+                            <Flex css={{ color: '#999' }}>
+                                <InputStyle
+                                    type="text"
+                                    value={hookMember.companyEmail}
+                                    onChange={(e) => hookMember.onChangeCompanyEmail(e.target.value)}
+                                />
+                            </Flex>
+                        </Flex>
+                        <Flex css={{ width: 'calc(100%)' }}>
+                            <TheadSmall>헬스장 이미지</TheadSmall>
+                            <Flex css={{ marginTop: 10 }}>
+                                <FlexRow>
+                                    <input
+                                        type="file"
+                                        id="gymPhoto"
+                                        css={{ display: 'none' }}
+                                        onChange={hookMember.onChangeGymPhoto}
+                                    />
+                                    <label htmlFor="gymPhoto" css={{ flex: 1 }}>
+                                        <FlexCenter
+                                            css={{
+                                                height: 40,
+                                                flex: 1,
+                                                borderRadius: 10,
+                                                cursor: 'pointer',
+                                                backgroundColor: '#666',
+                                            }}>
+                                            <FlexRow css={{ alignItems: 'center' }}>
+                                                <div //사업자
+                                                    css={{
+                                                        width: 30,
+                                                        height: 27,
+                                                        backgroundImage: `url(/image/signup/camera_icon.png)`,
+                                                        backgroundSize: 'contain',
+                                                        backgroundPosition: 'center',
+                                                        backgroundRepeat: 'no-repeat',
+                                                        marginRight: 5,
+                                                    }}
+                                                />
+                                                <div
+                                                    css={{
+                                                        marginLeft: 6,
+                                                        fontSize: 17,
+                                                        color: 'white',
+                                                    }}>
+                                                    헬스장 로고 사진 첨부하기
+                                                </div>
+                                            </FlexRow>
+                                        </FlexCenter>
+                                    </label>
+                                </FlexRow>
+                                <FlexRow css={{ marginTop: 10 }}>
+                                    <div
+                                        css={{
+                                            width: 115,
+                                            height: 115,
+                                            backgroundColor: '#f5f5f5',
+                                        }}>
+                                        {hookMember.gymPreviewPhoto && (
+                                            <div
+                                                css={{
+                                                    backgroundImage: `url(${hookMember.gymPreviewPhoto})`,
+                                                    width: 115,
+                                                    height: 115,
+                                                    backgroundPosition: 'center',
+                                                    backgroundSize: 'cover',
+                                                }}
+                                            />
+                                        )}
+                                    </div>
+                                </FlexRow>
+                            </Flex>
+                        </Flex>
+
                     </Flex>
                 </BorderRoundedContent>
+
             </div>
             <BasicModal
                 display={hookMember.modalDisplayState}
                 content={hookMember.modalContent}
                 confirmBtn={hookMember.onClickCompleted}
             />
+            <ContentFlex css={{ minHeight: '100vh' }}>
+                <DaumPostcode
+                    style={{ width: '100%', height: '100%' }}
+                    onComplete={async (data) => {
+                        hookMember.onCompletePostCode(data);
+                    }}
+                    autoClose={false}
+                />
+            </ContentFlex>
         </div>
     );
 };
 
-export default AdminUserCreateScreen;
+export default AdminGymCreateScreen;

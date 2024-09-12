@@ -1,34 +1,59 @@
-import router, { useRouter } from 'next/router';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { createUser, useCreateUserByAdminMutation, useFindDuplicateUserDataMutation, useFindUserQuery, UserType } from 'src/api/usersApi';
+// import { is } from 'immer/dist/internal';
+import { useRouter } from 'next/router';
+import { ChangeEvent, useEffect, useState } from 'react'; import { Address } from 'react-daum-postcode';
+import { Gym, useCreateGymInfoMutation, useFindDuplicateGymDataMutation, useFindGymQuery, useUpdateGymByIdMutation, useUpsertGymImageMutation } from 'src/api/gymsApi';
+;
+import {
+  useFindUserQuery,
+  User,
+  UserType,
+  useUpdateUserByAdminMutation,
+} from 'src/api/usersApi';
+import { imageResizer } from 'src/common/imageResizer/imageResizer';
+import { setUser } from 'src/data/accountSlice';
 import { useTypedSelector } from 'src/store';
+import { rootUrl } from 'src/util/constants/app';
 
 interface hookMember {
-  user: any;
-  loginId: string;
-  password: string;
-  repassword: string;
-  name: string;
-  nickname: string;
-  userType: UserType | undefined;
+  gym: Gym | undefined;
 
-  duplicateId: boolean,
-  duplicateNickname: boolean,
-  duplicatePhonenumber: boolean;
+  postcodeDisplayState: 'flex' | 'none';
 
-  onChangeLoginId: (val: string) => void;
-  onChangePw: (val: string) => void;
-  onChangeRePw: (val: string) => void;
-  onChangeName: (val: string) => void;
-  onChangeNickname: (val: string) => void;
-  onChangeUserType: (val: UserType) => void;
+  duplicateCompanyName: boolean;
+  companyName: string;
+  ceoName: string;
+  businessNumber: string;
+  postCode: string;
+  mainAddress: string;
+  subAddress: string;
+  companyPhone: string;
+  companyCellPhone: string;
+  companyFax: string;
+  companyEmail: string;
+  gymPreviewPhoto: any;
 
-  onClickDiplucateUserId: () => void;
-  onClickDiplucateNickname: () => void;
+  onClickPostCode: () => void;
+  onCompletePostCode: (data: Address) => void;
+  onClickRouterBack: () => void;
 
-  onClickRouterUser: () => void;
-  onClickCreateUser: () => void;
+  onClickDuplicateCompanyName: () => void;
+  onChangeDuplicateCompanyName: () => void;
+
+  onChangeCompanyName: (companyName: string) => void;
+  onChangeCeoName: (ceoName: string) => void;
+  onChangeBusinessNumber: (businessNumber: string) => void;
+  onChangeSubAddress: (subAddress: string) => void;
+  onChangeCompanyPhone: (companyPhone: string) => void;
+  onChangeCompanyCellPhone: (companyCellPhone: string) => void;
+  onChangeCompanyFax: (companyFax: string) => void;
+  onChangeCompanyEmail: (companyEmail: string) => void;
+
+  onChangeGymPhoto: (e: ChangeEvent<HTMLInputElement>) => void;
+
+  onClickRouterGym: () => void;
+  onClickSaveGym: () => void;
+
+  onClickUpdateGym: () => void;
 
   modalDisplayState: 'flex' | 'none';
   onClickCompleted: () => void;
@@ -37,318 +62,404 @@ interface hookMember {
 
 export function useAdminGymCreateScreen(): hookMember {
   const router = useRouter();
-  const [user, setUser] = useState<any>({
-    userType: 'GENERAL',
+
+  //  회사정보 중복관련 mutation
+  const [duplicateGymData] = useFindDuplicateGymDataMutation();
+
+  const adminUserId = useTypedSelector((state) => state.account.user?.id || -1);
+
+  const { data: gym, refetch: gymRefetch } = useFindGymQuery({
+    id: Number(router.query.id),
   });
 
-  const adminId = Number(useTypedSelector((state) => state.account.user?.id || -1));
+  const [upsertGymImage] = useUpsertGymImageMutation();
 
+  // const [updateGymByAdmin] = useUpdateGymByIdMutation();
+  const [createGymByAdmin] = useCreateGymInfoMutation();
 
-
-  const [duplicateMutaion] = useFindDuplicateUserDataMutation();
-  const [createUserByAdmin] = useCreateUserByAdminMutation();
-
-  const [loginId, setLoginId] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [repassword, setRepassword] = useState<string>('');
-  const [name, setName] = useState<string>('');
-  const [nickname, setNickname] = useState<string>('');
-  const [userType, setUserType] = useState<UserType | undefined>(undefined);
-  
-  const [duplicateId, setDuplicateId] = useState<boolean>(false);
-  const [duplicateNickname, setDuplicateNickname] = useState<boolean>(false);
-  const [duplicatePhonenumber, setDuplicatePhonenumber] =
-    useState<boolean>(false);
-  //
-  const [checkPassword, setCheckPassword] = useState<boolean | undefined>(
-    undefined,
+  const [modalDisplayState, setModalDisplayState] = useState<'flex' | 'none'>(
+    'none',
   );
-
-  const [modalDisplayState, setModalDisplayState] = useState<'flex'|'none'>('none');
   const [modalContent, setModalContent] = useState<any>(<div></div>);
 
   const onClickCompleted = () => {
     setModalDisplayState('none');
-  }
+  };
 
+  const [postcodeDisplayState, setPostcodeDisplayState] = useState<
+    'flex' | 'none'
+  >('none');
 
-  //유저 생성
-  const onClickCreateUser = async () => {
+  // s: input
 
+  const [userId, setUserId] = useState<number>();
 
-    if (!userType) {
+  const [postCode, setPostCode] = useState<string>('');
+  const [mainAddress, setMainAddress] = useState<string>('');
+
+  const [duplicateCompanyName, setDuplicateCompanyName] =
+    useState<boolean>(false);
+  // 입력 데이터 state
+
+  // const [duplicateBusinessNumber, setDuplicateBussinessNumber] =
+  // useState<boolean>(false);
+  // 입력 데이터 state
+  const [companyName, setCompanyName] = useState<string>('');
+  const [ceoName, setCeoName] = useState<string>('');
+  const [businessNumber, setBusinessNumber] = useState<string>('');
+  const [subAddress, setSubAddress] = useState<string>('');
+  const [companyPhone, setCompanyPhone] = useState<string>('');
+  const [companyCellPhone, setCompanyCellPhone] = useState<string>('');
+  const [companyEmail, setCompanyEmail] = useState<string>('');
+  const [companyFax, setCompanyFax] = useState<string>('');
+  // 헬스장 이미지 state
+  const [gymPhoto, setGymPhoto] = useState<
+    File | undefined
+  >(undefined);
+  const [gymPreviewPhoto, setGymPreviewPhoto] =
+    useState<any>('');
+
+  const [gymPhotoId, setGymPhotoId] = useState<number>();
+
+  // 회사정보 중복관련 fnc
+  const onClickDuplicateCompanyName = async () => {
+    const result: any = await duplicateGymData({
+      type: 'companyName',
+      content: companyName,
+    });
+    //
+    if (!result?.data || companyName.length < 3) {
+      setModalDisplayState('flex');
       setModalContent(
         <div css={{ textAlign: 'center' }}>
-          <span css={{ fontWeight: 'bold' }}>회원분류</span>
+          <span css={{ fontWeight: 'bold' }}>회사명 중복 확인</span>
           <br />
-          회원분류를 선택해주세요.
+          중복된 회사명 또는 사용 불가 회사명입니다.
         </div>,
       );
+      setDuplicateCompanyName(true);
+    } else {
+      setDuplicateCompanyName(false);
       setModalDisplayState('flex');
-      return;
-    }
-
-    if (
-      loginId.length < 3 ||
-      loginId.length > 11
-    ) {
       setModalContent(
         <div css={{ textAlign: 'center' }}>
-          <span css={{ fontWeight: 'bold' }}>아이디</span>
+          <span css={{ fontWeight: 'bold' }}>회사명 중복 확인</span>
           <br />
-          3자이상, 15자 이하로 작성해주세요.
+          사용가능한 회사명입니다.
         </div>,
       );
-      setModalDisplayState('flex');
-      return;
     }
-    if (duplicateId) {
-      setModalContent(
-        <div css={{ textAlign: 'center' }}>
-          <span css={{ fontWeight: 'bold' }}>아이디</span>
-          <br />
-          아이디 중복확인을 해주세요.
-        </div>,
-      );
-      setModalDisplayState('flex');
-      return;
+  };
+  const onChangeDuplicateCompanyName = () => {
+    setDuplicateCompanyName(true);
+  };
+  // 입력 데이터 fnc
+  const onChangeCompanyName = (companyName: string) => {
+    setCompanyName(companyName);
+  };
+  const onChangeCeoName = (ceoName: string) => {
+    setCeoName(ceoName);
+  };
+  const onChangeBusinessNumber = (businessNumber: string) => {
+    setBusinessNumber(businessNumber);
+  };
+  const onChangeSubAddress = (subAddress: string) => {
+    setSubAddress(subAddress);
+  };
+  const onChangeCompanyPhone = (compnayPhone: string) => {
+    setCompanyPhone(compnayPhone);
+  };
+  const onChangeCompanyCellPhone = (companyCellPhone: string) => {
+    setCompanyCellPhone(companyCellPhone);
+  };
+  const onChangeCompanyEmail = (companyEmail: string) => {
+    setCompanyEmail(companyEmail);
+  };
+  const onChangeCompanyFax = (companyEmail: string) => {
+    setCompanyFax(companyEmail);
+  };
+  // 헬스장 이미지 fnc
+  const onChangeGymPhoto = async (
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const compressedFile = await imageResizer(file);
+      if (!compressedFile) return;
+      setGymPhoto(compressedFile);
+      const reader = new FileReader();
+      reader.readAsDataURL(compressedFile);
+
+      reader.onloadend = function (e) {
+        setGymPreviewPhoto(reader.result);
+      };
     }
-    // 비밀번호 글자수 검사
-    // 비밀번호 특수문자 숫자 등 검사
-    let pw = password;
+  };
 
-    if(pw.length < 4) {
-      setModalContent(
-        <div css={{ textAlign: 'center' }}>
-          <span css={{ fontWeight: 'bold' }}>비밀번호</span>
-          <br />
-          4자 이상 작성해주세요.
-        </div>,
-      );
-      setModalDisplayState('flex');
-      return;
-    }  
-    else {
-      console.log('통과')
+  // e: input
+
+
+  useEffect(() => {
+    gymRefetch();
+  }, []);
+
+  useEffect(() => {
+    if (gym) {
+      setCeoName(gym.ceoName);
+      setCompanyName(gym.companyName);
+      setBusinessNumber(gym.businessNumber);
+      setCompanyPhone(gym.phone);
+      setCompanyCellPhone(gym.cellPhone);
+      setCompanyFax(gym.fax);
+      setCompanyEmail(gym.email);
+      setMainAddress(gym.mainAddress);
+      setSubAddress(gym.subAddress);
+      setPostCode(gym.postcode);
+
+      if(gym.GymImage && gym.GymImage[0]) {
+        setGymPreviewPhoto(
+          gym.GymImage[0].url?.replace (/^/,`${rootUrl}/`) || ''
+        );
+      }
+
     }
+  }, [gym]);
 
-    pw = repassword;
-
-    if(pw.length < 4) {
-      setModalContent(
-        <div css={{ textAlign: 'center' }}>
-          <span css={{ fontWeight: 'bold' }}>비밀번호 확인</span>
-          <br />
-          4자 이상 작성해주세요.
-        </div>,
-      );
-      setModalDisplayState('flex');
-      return;
-    }      
-    else {
-      console.log('통과')
+  // 우편번호 검색에 사용할 fnc
+  const onClickPostCode = () => {
+    if (postcodeDisplayState === 'flex') {
+      setPostcodeDisplayState('none');
+    } else {
+      setPostcodeDisplayState('flex');
     }
-    // 비밀번호 확인 일치 검사
-    if (password !== repassword) {
-      setModalContent(
-        <div css={{ textAlign: 'center' }}>
-          <span css={{ fontWeight: 'bold' }}>비밀번호 확인</span>
-          <br />
-          비밀번호와 비밀번호 확인이
-          <br />
-          일치하지 않습니다.
-        </div>,
-      );
-      setModalDisplayState('flex');
+  };
+  const onCompletePostCode = (data: Address) => {
+    setPostCode(data.zonecode);
+    setMainAddress(data.address);
+    setPostcodeDisplayState('none');
+  };
+  // 뒤로가기
+  const onClickRouterBack = () => {
+    router.back();
+  };
 
-      return;
-    }
 
-    // 이름 글자수 검사
+  const onClickUpdateGym = async () => {
+    //
+    let isModified = false;
 
-    // 닉네임 글자수 검사
-    // 닉네임 중복 검사
-    if (duplicateNickname) {
-      setModalContent(
-        <div css={{ textAlign: 'center' }}>
-          <span css={{ fontWeight: 'bold' }}>닉네임</span>
-          <br />
-          닉네임 중복확인을 해주세요.
-        </div>,
-      );
-      setModalDisplayState('flex');
-      return;
-    }
-
-    if (name.length <= 0) {
-      setModalContent(
-        <div css={{ textAlign: 'center' }}>
-          <span css={{ fontWeight: 'bold' }}>이름</span>
-          <br />
-          이름을 입력하여 주세요
-        </div>,
-      );
-      setModalDisplayState('flex');
-      return;
-    }
-
-    // // 휴대폰번호 중복 검사
-    // if (duplicatePhonenumber) {
+    // // NOTE 회사명 중복검사...
+    // if (companyName === '') {
     //   setModalContent(
     //     <div css={{ textAlign: 'center' }}>
-    //       <span css={{ fontWeight: 'bold' }}>휴대폰 번호</span>
+    //       <span css={{ fontWeight: 'bold' }}>회사명</span>
     //       <br />
-    //       휴대폰 번호 중복확인을 해주세요.
+    //       회사명을 입력해주세요.
     //     </div>,
     //   );
     //   setModalDisplayState('flex');
     //   return;
     // }
-
-    const result:any = await createUserByAdmin({
-      adminId: adminId,
-      body:{
-        loginId,
-        loginPw: password,
-        username: name,
-        loginType: (userType==='MANAGER') ? 'ADMIN' : 'LOCAL',
-        userType,
-        nickname,
-      }
-    });
-
-    if(result.data) {
-      router.back();
-    } else {
+    if (duplicateCompanyName) {
       setModalContent(
         <div css={{ textAlign: 'center' }}>
-          <span css={{ fontWeight: 'bold' }}>에러!</span>
+          <span css={{ fontWeight: 'bold' }}>회사명</span>
           <br />
-          계정 생성 오류!
+          회사명 중복확인을 해주세요.
+        </div>,
+      );
+      setModalDisplayState('flex');
+      return;
+    }
+    // NOTE 대표자명 중복검사...
+    if (ceoName === '') {
+      setModalContent(
+        <div css={{ textAlign: 'center' }}>
+          <span css={{ fontWeight: 'bold' }}>대표자명</span>
+          <br />
+          대표자명을 입력해주세요.
+        </div>,
+      );
+      setModalDisplayState('flex');
+      return;
+    }
+    // NOTE 헬스장 이미지 검사
+    if (!gymPhoto) {
+      setModalContent(
+        <div css={{ textAlign: 'center' }}>
+          <span css={{ fontWeight: 'bold' }}>헬스장 이미지</span>
+          <br />
+          이미지를 등록해주세요.
+        </div>,
+      );
+      setModalDisplayState('flex');
+      return;
+    }
+    // NOTE 우편번호
+    if (postCode === '') {
+      setModalContent(
+        <div css={{ textAlign: 'center' }}>
+          <span css={{ fontWeight: 'bold' }}>사업자주소</span>
+          <br />
+          우편번호를 입력해주세요.
+        </div>,
+      );
+      setModalDisplayState('flex');
+      return;
+    }
+    // NOTE 메인주소
+    if (mainAddress === '') {
+      setModalContent(
+        <div css={{ textAlign: 'center' }}>
+          <span css={{ fontWeight: 'bold' }}>사업자주소</span>
+          <br />
+          주소를 입력해주세요.
+        </div>,
+      );
+      setModalDisplayState('flex');
+      return;
+    }
+    // NOTE 상세주소
+    if (subAddress === '') {
+      setModalContent(
+        <div css={{ textAlign: 'center' }}>
+          <span css={{ fontWeight: 'bold' }}>사업자주소</span>
+          <br />
+          상세주소를 입력해주세요.
+        </div>,
+      );
+      setModalDisplayState('flex');
+      return;
+    }
+    // NOTE 대표전화
+    if (companyPhone === '') {
+      setModalContent(
+        <div css={{ textAlign: 'center' }}>
+          <span css={{ fontWeight: 'bold' }}>대표전화</span>
+          <br />
+          대표전화를 입력해주세요.
+        </div>,
+      );
+      setModalDisplayState('flex');
+      return;
+    } // NOTE 긴급전화
+    if (companyCellPhone === '') {
+      setModalContent(
+        <div css={{ textAlign: 'center' }}>
+          <span css={{ fontWeight: 'bold' }}>긴급전화</span>
+          <br />
+          긴급전화를 입력해주세요.
+        </div>,
+      );
+      setModalDisplayState('flex');
+      return;
+    } // NOTE 이메일
+    if (companyEmail === '') {
+      setModalContent(
+        <div css={{ textAlign: 'center' }}>
+          <span css={{ fontWeight: 'bold' }}>이메일</span>
+          <br />
+          이메일을 입력해주세요.
         </div>,
       );
       setModalDisplayState('flex');
       return;
     }
 
+    if (userId) {
+      const companyInfo: any = await createGymByAdmin(
+        {
+          userId,
+          body: {
+            ceoName,
+            companyName,
+            businessNumber,
+            phone: companyPhone,
+            cellPhone: companyCellPhone,
+            fax: companyFax,
+            email: companyEmail,
+            mainAddress,
+            subAddress,
+            postcode: postCode,
+          }
+        },
+      );
+
+      if (companyInfo) {
+        if (gymPhoto) {
+          const companyInfoId: number = companyInfo.id as number;
+
+          const form = new FormData();
+          form.append('gymImage', gymPhoto);
+          const result = await upsertGymImage({
+            gymId:companyInfoId,
+            form:form
+          });
+
+        }
+
+        isModified = true;
+
+      }
+
+    }
+
+
+    if (isModified) {
+      if (confirm('생성되었습니다!(확인 시 목록으로)')) router.back();
+      gymRefetch();
+
+    }
   };
 
   return {
-    user,
-    loginId,
-    password,
-    repassword,
-    name,
-    nickname,
-    userType,
-    duplicateId,
-    duplicateNickname,
-    duplicatePhonenumber,
+    gym,
 
     modalDisplayState,
     modalContent,
+    onClickCompleted,
 
-    onChangeLoginId: (val: string) => {
-      setLoginId(val);
-      setDuplicateId(true);
-    },
-    onChangePw: (val: string) => {
-      setPassword(val);
-    },
-    onChangeRePw: (val: string) => {
-      setRepassword(val);
-    },
-    onChangeName: (val: string) => {
-      setName(val);
-    },
-    onChangeNickname: (val: string) => {
-      setNickname(val);
-      setDuplicateNickname(true);
-    },
-    onChangeUserType: (val: UserType) => {
-      setUserType(val);
-    },
-
-    onClickDiplucateUserId: async () => {
-      const result: any = await duplicateMutaion({
-        type: 'loginId',
-        content: loginId,
-      });
-      if (!result?.data || loginId.length < 3) {
-        setModalDisplayState('flex');
-        setModalContent(
-          <div css={{ textAlign: 'center' }}>
-            <span css={{ fontWeight: 'bold' }}>아이디 중복 확인</span>
-            <br />
-            중복된 아이디 또는 사용 불가 아이디입니다.
-          </div>,
-        );
-        setDuplicateId(true);
-      } else {
-        setDuplicateId(false);
-        setModalDisplayState('flex');
-        setModalContent(
-          <div css={{ textAlign: 'center' }}>
-            <span css={{ fontWeight: 'bold' }}>아이디 중복 확인</span>
-            <br />
-            사용가능한 아이디입니다.
-          </div>,
-        );
-      }
-    },
-    onClickDiplucateNickname: async () => {
-      const result: any = await duplicateMutaion({
-        type: 'nickname',
-        content: nickname,
-      });
-      if (!result?.data || nickname.length < 2) {
-        setModalDisplayState('flex');
-        setModalContent(
-          <div css={{ textAlign: 'center' }}>
-            <span css={{ fontWeight: 'bold' }}>닉네임 중복 확인</span>
-            <br />
-            이미 사용중이거나 사용불가한 닉네임입니다.
-          </div>,
-        );
-        setDuplicateNickname(true);
-      } else {
-        setDuplicateNickname(false);
-        setModalDisplayState('flex');
-        setModalContent(
-          <div css={{ textAlign: 'center' }}>
-            <span css={{ fontWeight: 'bold' }}>닉네임 중복 확인</span>
-            <br />
-            사용가능한 닉네임입니다.
-          </div>,
-        );
-      }
-    },
-
-    onClickRouterUser: () => {
+    onClickRouterGym: () => {
       router.push(`/admin/user/`);
     },
-    onClickCreateUser,
-    onClickCompleted,
+    onClickSaveGym: () => {
+      console.log(gym);
+    },
+
+    onClickUpdateGym,
+
+    postcodeDisplayState,
+    duplicateCompanyName,
+    postCode,
+    mainAddress,
+    subAddress,
+    companyName,
+    businessNumber,
+    ceoName,
+    companyPhone,
+    companyCellPhone,
+    companyFax,
+    companyEmail,
+    gymPreviewPhoto,
+
+    onClickDuplicateCompanyName,
+    onChangeDuplicateCompanyName,
+
+    onChangeCompanyName,
+    onChangeCeoName,
+    onChangeBusinessNumber,
+    onChangeSubAddress,
+    onChangeCompanyPhone,
+    onChangeCompanyCellPhone,
+    onChangeCompanyFax,
+    onChangeCompanyEmail,
+
+    onChangeGymPhoto,
+
+    onClickPostCode,
+    onCompletePostCode,
+    onClickRouterBack,
+
+
   };
-}
-
-
-interface FrontCompanyInfo {
-  constructorType: string;
-  ceoName: string;
-  companyName: string;
-  businessNumber: string;
-  subAddress: string;
-  sido: string;
-  sigungu: string;
-  businessStatus: string;
-  businessSector: string;
-  phone: string;
-  cellPhone: string;
-  fax: string;
-  email: string;
-  taxBillEmail: string;
-  bank: string;
-  accountNumber: string;
-  depositorName: string;
 }
