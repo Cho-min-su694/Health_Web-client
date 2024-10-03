@@ -15,6 +15,7 @@ import { mediumBlack, fenxyBlue } from 'src/util/constants/style';
 import { useAdminGymCreateScreen } from './hooks/useAdminGymCreateScreen';
 import DaumPostcode from 'react-daum-postcode';
 import Image from 'next/image';
+import Header from 'src/common/header/Header';
 
 const AdminGymCreateScreen = () => {
     const hookMember = useAdminGymCreateScreen();
@@ -52,7 +53,7 @@ const AdminGymCreateScreen = () => {
                             flexGrow: 1,
                             lineHeight: '32px',
                         }}>
-                        회원관리
+                        헬스장 관리
                     </div>
                     <FlexRow>
                         {/* {hookMember.user?.userType === 'BUSINESS' ? (
@@ -69,7 +70,7 @@ const AdminGymCreateScreen = () => {
                         <StyledButton
                             onClick={hookMember.onClickUpdateGym}
                             css={{ background: fenxyBlue }}>
-                            수정
+                            생성
                         </StyledButton>
                         <StyledButton
                             css={{ backgroundColor: '#4A5864' }}
@@ -240,8 +241,8 @@ const AdminGymCreateScreen = () => {
                             <Flex css={{ color: '#999' }}>
                                 <InputStyle
                                     type="number"
-                                    value={hookMember.companyCellPhone}
-                                    onChange={(e) => hookMember.onChangeCompanyCellPhone(e.target.value)}
+                                    value={hookMember.companyFax}
+                                    onChange={(e) => hookMember.onChangeCompanyFax(e.target.value)}
                                 />
                             </Flex>
                         </Flex>
@@ -330,15 +331,46 @@ const AdminGymCreateScreen = () => {
                 content={hookMember.modalContent}
                 confirmBtn={hookMember.onClickCompleted}
             />
-            <ContentFlex css={{ minHeight: '100vh' }}>
-                <DaumPostcode
-                    style={{ width: '100%', height: '100%' }}
-                    onComplete={async (data) => {
-                        hookMember.onCompletePostCode(data);
-                    }}
-                    autoClose={false}
+            <Flex
+                css={{
+                    display: hookMember.postcodeDisplayState,
+                    position: 'fixed',
+                    top: 0,
+                    right: 0,
+                    left: 0,
+                    bottom: 0,
+                    zIndex: 10,
+                    padding: 10,
+                    backgroundColor: 'rgba(0,0,0,0.3)',
+                    flex: 1,
+                }}>
+                <Header
+                    CenterComponent={
+                        <div css={{ fontSize: 14, color: '#333', fontWeight: 500 }}>
+                            우편번호 찾기
+                        </div>
+                    }
+                    RightComponent={
+                        <div
+                            css={{
+                                cursor: 'pointer',
+                                width: 24,
+                                height: 24,
+                                backgroundImage: 'url(/image/icon/cancel-black.svg)',
+                            }}
+                            onClick={hookMember.onClickPostCode}></div>
+                    }
                 />
-            </ContentFlex>
+                <ContentFlex css={{ minHeight: '100vh' }}>
+                    <DaumPostcode
+                        style={{ width: '100%', height: '100%' }}
+                        onComplete={async (data) => {
+                            hookMember.onCompletePostCode(data);
+                        }}
+                        autoClose={false}
+                    />
+                </ContentFlex>
+            </Flex>
         </div>
     );
 };

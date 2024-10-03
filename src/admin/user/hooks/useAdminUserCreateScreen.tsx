@@ -11,6 +11,7 @@ interface hookMember {
   repassword: string;
   name: string;
   nickname: string;
+  phone: string;
   userType: UserType | undefined;
 
   duplicateId: boolean,
@@ -21,6 +22,7 @@ interface hookMember {
   onChangePw: (val: string) => void;
   onChangeRePw: (val: string) => void;
   onChangeName: (val: string) => void;
+  onChangePhone: (val: string) => void;
   onChangeNickname: (val: string) => void;
   onChangeUserType: (val: UserType) => void;
 
@@ -53,6 +55,7 @@ export function useAdminUserCreateScreen(): hookMember {
   const [repassword, setRepassword] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
   const [userType, setUserType] = useState<UserType | undefined>(undefined);
   
   const [duplicateId, setDuplicateId] = useState<boolean>(false);
@@ -211,9 +214,10 @@ export function useAdminUserCreateScreen(): hookMember {
         loginId,
         loginPw: password,
         username: name,
-        loginType: (userType==='MANAGER') ? 'ADMIN' : 'LOCAL',
+        loginType: (userType === 'MANAGER') ? 'ADMIN' : 'LOCAL',
         userType,
         nickname,
+        phone
       }
     });
 
@@ -240,6 +244,7 @@ export function useAdminUserCreateScreen(): hookMember {
     repassword,
     name,
     nickname,
+    phone,
     userType,
     duplicateId,
     duplicateNickname,
@@ -264,6 +269,9 @@ export function useAdminUserCreateScreen(): hookMember {
     onChangeNickname: (val: string) => {
       setNickname(val);
       setDuplicateNickname(true);
+    },
+    onChangePhone: (val: string) => {
+      setPhone(val);
     },
     onChangeUserType: (val: UserType) => {
       setUserType(val);

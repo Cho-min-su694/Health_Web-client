@@ -14,6 +14,7 @@ import accountSlice from './data/accountSlice';
 import { usersApi } from './api/usersApi';
 import { gymsApi } from './api/gymsApi';
 import { bodyPartsApi } from './api/bodyPartsApi';
+import { equipmentsApi } from './api/equipmentsApi';
 
 const initialState = {};
 
@@ -22,6 +23,7 @@ const reducer = combineReducers({
     [usersApi.reducerPath]: usersApi.reducer,
     [gymsApi.reducerPath]: gymsApi.reducer,
     [bodyPartsApi.reducerPath]: bodyPartsApi.reducer,
+    [equipmentsApi.reducerPath]: equipmentsApi.reducer,
     account: accountSlice,
 });
 
@@ -37,6 +39,7 @@ function initStore(preloadedState = initialState): Store<RootState> {
       .concat(usersApi.middleware)
       .concat(gymsApi.middleware)
       .concat(bodyPartsApi.middleware)
+      .concat(equipmentsApi.middleware)
     ,
     devTools: process.env.NODE_ENV !== 'production',
   });

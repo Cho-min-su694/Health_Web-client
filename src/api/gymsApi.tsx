@@ -3,6 +3,7 @@ import { fetchCompatBaseQuery } from 'src/util/fetchCompatBaseQuery';
 import { User } from './usersApi';
 import { ImageType } from 'src/common/commonType';
 import fetchCompat from 'src/util/fetchCompat';
+import { Equipment } from './equipmentsApi';
 
 // NOTE Api 이름은 무조건 복수명으로 한다. (NestJS와 동일)
 export const gymsApi = createApi({
@@ -80,9 +81,9 @@ export const gymsApi = createApi({
       }
     >({
       query: (arg) => ({
-        method: 'PATCH',
+        method: 'POST',
         url: `${arg.gymId}/image`,
-        form: arg.form,
+        body: arg.form,
       }),
     }),
 
@@ -147,7 +148,7 @@ export type Gym = {
   userId?: number;
   User?: User;
   GymImage?: GymImage[]
-  // GymEquipments?: GymEquipment[]
+  GymEquipments?: Equipment[]
   // FavoriteUsers?: FavoriteUser[]
   // GymAccessHistory?: GymAccessHistory[]
   // GymMembership?: GymMembership[]
@@ -191,4 +192,4 @@ export type GymUpdateInput = {
   isDisable?: boolean
 };
 
-export type GymImage = {} & ImageType;
+export type GymImage = {gymId?:string} & ImageType;

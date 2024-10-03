@@ -25,6 +25,7 @@ export const navArray = [
   // { title: '결제관리', name: '전체조회', url: '/admin/payment' },
   { title: '헬스장관리', name: '헬스장관리', url: '/admin/gym' },
   { title: '기구관리', name: '운동부위 관리', url: '/admin/bodypart' },
+  { title: '기구관리', name: '기구 관리', url: '/admin/equipment' },
   { title: '유저관리', name: '유저관리', url: '/admin/user' },
 ];
 
@@ -72,7 +73,7 @@ export function useAdminHeader(): hookMember {
       if (item === '유저관리') {
         router.push('/admin/user');
       } else if (item === '기구관리') {
-        router.push('/admin/bodypart');
+        router.push('/admin/equipment');
       } else if (item === '헬스장관리') {
         router.push('/admin/gym');
       }

@@ -52,7 +52,7 @@ const AdminGymDetailScreen = () => {
                             flexGrow: 1,
                             lineHeight: '32px',
                         }}>
-                        회원관리
+                        헬스장 관리
                     </div>
                     <FlexRow>
                         {/* {hookMember.user?.userType === 'BUSINESS' ? (

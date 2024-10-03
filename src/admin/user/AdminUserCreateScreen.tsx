@@ -219,6 +219,30 @@ const AdminUserCreateScreen = () => {
                                 </div>
                             )}
                         </Flex>
+                        <Flex css={{ width: 'calc(50% - 15px)' }}>
+                            <TheadSmall>
+                                전화번호<span>*</span>
+                            </TheadSmall>
+                            <Flex css={{ color: '#999' }}>
+                                <InputStyle
+                                    type="text"
+                                    placeholder="전화번호"
+                                    value={hookMember.phone}
+                                    onChange={(e) => {
+                                        let text = e.target.value;
+                                        text = text
+                                          .replace(/[^0-9]/g, '')
+                                          .replace(
+                                            /(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,
+                                            '$1-$2-$3',
+                                          )
+                                          .replace('--', '-');
+                                        hookMember.onChangePhone(text)
+                                        // hookMember.onChangeUserData('username', e.target.value);
+                                    }}
+                                />
+                            </Flex>
+                        </Flex>
                         {/* </>
             )} */}
                     </Flex>
