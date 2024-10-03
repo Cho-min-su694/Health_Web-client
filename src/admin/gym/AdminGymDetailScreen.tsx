@@ -95,6 +95,17 @@ const AdminGymDetailScreen = () => {
                                 </Flex>
                             </Flex>
                         </FlexRow>
+                        <FlexRow css={{ gap: 20 }}>
+
+                            <Flex css={{ flex: 1 }}>
+                                <TheadSmall>회원 번호</TheadSmall>
+                                <Flex css={{ color: '#999' }}>{hookMember.gym?.User?.id}</Flex>
+                            </Flex>
+                            <Flex css={{ flex: 1 }}>
+                                <TheadSmall>회원 이름</TheadSmall>
+                                <Flex css={{ color: '#999' }}>{hookMember.gym?.User?.username} ({hookMember.gym?.User?.nickname})</Flex>
+                            </Flex>
+                        </FlexRow>
                     </Flex>
                 </BorderRoundedContent>
 
