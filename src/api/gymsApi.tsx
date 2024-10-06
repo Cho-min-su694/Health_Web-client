@@ -87,11 +87,16 @@ export const gymsApi = createApi({
       }),
     }),
 
-    // NOTE 관리자 회원 상세
     findGym: builder.query<Gym, { id: number }>({
       query: (arg) => ({
         method: 'GET',
         url: `${arg.id}`,
+      }),
+    }),
+    findGymByUserId: builder.query<Gym, { userId: number }>({
+      query: (arg) => ({
+        method: 'GET',
+        url: `user/${arg.userId}`,
       }),
     }),
     findAdminAllGyms: builder.mutation<
@@ -128,7 +133,7 @@ export const gymsApi = createApi({
   }),
 });
 
-export const { useCreateGymImageMutation, useCreateGymInfoMutation, useUpdateGymByIdMutation, useFindDuplicateGymDataMutation, useFindAdminAllGymsMutation, useRemoveGymByAdminMutation, useFindGymQuery, useUpsertGymImageMutation } = gymsApi;
+export const { useCreateGymImageMutation, useCreateGymInfoMutation, useUpdateGymByIdMutation, useFindDuplicateGymDataMutation, useFindAdminAllGymsMutation, useRemoveGymByAdminMutation, useFindGymQuery, useUpsertGymImageMutation, useFindGymByUserIdQuery } = gymsApi;
 
 export type Gym = {
   id?: number

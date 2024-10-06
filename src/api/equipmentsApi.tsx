@@ -4,6 +4,7 @@ import { fetchCompatBaseQuery } from 'src/util/fetchCompatBaseQuery';
 import { BodyPart } from './bodyPartsApi';
 import { Gym } from './gymsApi';
 import fetchCompat from 'src/util/fetchCompat';
+import { User } from './usersApi';
 
 // NOTE Api 이름은 무조건 복수명으로 한다. (NestJS와 동일)
 export const equipmentsApi = createApi({
@@ -25,6 +26,22 @@ export const equipmentsApi = createApi({
       query: (arg) => ({
         method: 'POST',
         url: `create/${arg.userId}`,
+        body: arg.body,
+      }),
+    }),
+    registerEquipmentsOnGyms: builder.mutation<
+      unknown,
+      {
+        gymId: number;
+        body: {
+          equipmentIds: number[],
+          assingBy: number
+        };
+      }
+    >({
+      query: (arg) => ({
+        method: 'POST',
+        url: `create/gymequipment/${arg.gymId}`,
         body: arg.body,
       }),
     }),
@@ -80,20 +97,45 @@ export const equipmentsApi = createApi({
         url: '',
       }),
     }),
-    findAdminAllEquipments: builder.mutation<
+    findPagingAllEquipments: builder.mutation<
       { count: number; data: Equipment[] },
       {
         page: number;
         take: number;
         searchType?: string;
         searchText?: string;
+        isDisable?: boolean;
       }
     >({
       query: (arg) => ({
         method: 'GET',
-        url: `admin?page=${arg.page}&take=${arg.take}&searchType=${arg.searchType}&searchText=${arg.searchText}`,
+        url: `paging?page=${arg.page}&take=${arg.take}&searchType=${arg.searchType}&searchText=${arg.searchText}&isDisable=${arg.isDisable != undefined ? `${arg.isDisable ? 1 : 0}` : ''}`,
       }),
     }),
+
+    findEquipmentsOnGyms: builder.query<GymEuquipmentsOnGyms[], { 
+      gymId: number
+      isDisable?:boolean
+    }>({
+      query: (args) => ({
+        method: 'GET',
+        url: `gymequipment/${args.gymId}?isDisable=${args.isDisable ?? ""}`,
+      }),
+    }),
+
+    setDisableGymEquipmentsOnGyms: builder.mutation<
+      GymEuquipmentsOnGyms,
+      {
+        id: number;
+        isDisable: boolean;
+      }
+    >({
+      query: (arg) => ({
+        method: 'PATCH',
+        url: `gymequipment/disable/${arg.id}?isDisable=${arg.isDisable}`,
+      }),
+    }),
+
     removeEquipment: builder.mutation<Equipment, { id: number }>({
       query: (arg) => ({
         method: 'DELETE',
@@ -117,7 +159,7 @@ export const equipmentsApi = createApi({
   }),
 });
 
-export const { useCreateEquipmentMutation, useFindAdminAllEquipmentsMutation, useFindDuplicateEquipmentDataMutation, useFindAllEquipmentsQuery, useFindEquipmentQuery, useRemoveEquipmentMutation, useUpdateEquipmentMutation, useRemoveEquipmentByAdminMutation, useUpsertEquipmentImageMutation, useLazyFindEquipmentQuery } = equipmentsApi; 
+export const { useCreateEquipmentMutation, useFindPagingAllEquipmentsMutation, useFindDuplicateEquipmentDataMutation, useFindAllEquipmentsQuery, useFindEquipmentQuery, useRemoveEquipmentMutation, useUpdateEquipmentMutation, useRemoveEquipmentByAdminMutation, useUpsertEquipmentImageMutation, useLazyFindEquipmentQuery, useRegisterEquipmentsOnGymsMutation, useFindEquipmentsOnGymsQuery, useSetDisableGymEquipmentsOnGymsMutation } = equipmentsApi;
 
 export const createEquipmentData = async (
   userId: number,
@@ -135,7 +177,7 @@ export type Equipment = {
   code: string;
   isDisable: boolean;
 
-  brandName:string;
+  brandName: string;
 
   bodyParts?: BodyPart[]
 
@@ -147,7 +189,7 @@ export type EquipmentCreateInput = {
   name: string;
   code: string;
   isDisable?: boolean;
-  brandName:string;
+  brandName: string;
 
 
   bodyPartIds: number[];
@@ -158,7 +200,7 @@ export type EquipmentUpdateInput = {
   name?: string;
   code?: string;
   isDisable?: boolean;
-  brandName?:string;
+  brandName?: string;
 
 
   bodyPartIds?: number[];
@@ -170,6 +212,18 @@ export type BodyPartsOnGymEquipments = {
   BodyPart: BodyPart;
   bodyPartId: number
   assignedAt: Date;
+}
+
+export type GymEuquipmentsOnGyms = {
+  id?: number;
+  createdAt?: Date | string;
+  Gym?: Gym;
+  gymId: number;
+  GymEquipment?: Equipment;
+  gymEquipmentId: number;
+
+  assignBy: number;
+  assignUser?: User;
 }
 
 

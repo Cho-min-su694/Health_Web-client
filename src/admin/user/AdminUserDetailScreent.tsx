@@ -127,6 +127,15 @@ const AdminUserDetailScreen = () => {
                                             </div>
                                             <div
                                                 css={btnCheckBoxStyle}
+                                                className={`${hookMember.userType === 'BUSINESS' && 'active'
+                                                    }`}
+                                                onClick={(e) => {
+                                                    hookMember.onClickUserType('BUSINESS')
+                                                }}>
+                                                비즈니스
+                                            </div>
+                                            <div
+                                                css={btnCheckBoxStyle}
                                                 className={`${hookMember.userType === 'MANAGER' && 'active'
                                                     }`}
                                                 onClick={(e) => {

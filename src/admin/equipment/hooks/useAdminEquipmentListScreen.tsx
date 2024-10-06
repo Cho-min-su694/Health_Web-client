@@ -3,7 +3,7 @@ import router from 'next/router';
 import { useRef } from 'react';
 import { RefObject } from 'react';
 import { useEffect, useState } from 'react';
-import { Equipment, useFindAdminAllEquipmentsMutation, useRemoveEquipmentByAdminMutation, useRemoveEquipmentMutation } from 'src/api/equipmentsApi';
+import { Equipment, useFindPagingAllEquipmentsMutation, useRemoveEquipmentByAdminMutation, useRemoveEquipmentMutation } from 'src/api/equipmentsApi';
 import { useTypedSelector } from 'src/store';
 
 interface hookMember {
@@ -34,7 +34,7 @@ interface hookMember {
 export function useAdminEquipmentListScreen(): hookMember {
   // const { data: userData, refetch: userRefetch } = useFindAllUserQuery();
   const adminId = Number(useTypedSelector((state) => state.account.user?.id || -1));
-  const [findAdminAllGymEquipment] = useFindAdminAllEquipmentsMutation();
+  const [findPagingAllGymEquipment] = useFindPagingAllEquipmentsMutation();
   const [removeGymEquipmentByAdmin] = useRemoveEquipmentByAdminMutation();
 
   const [equipmentData, setEquipmentData] = useState<Equipment[]>([]);
@@ -50,12 +50,12 @@ export function useAdminEquipmentListScreen(): hookMember {
     const [searchText, setSearchText] = useState<string>('');
   
     useEffect(() => {
-      setSearchType('헬스장명');
+      setSearchType('이름');
       resetData();
     }, []);
   
     const resetData = async () => {
-      let result: any = await findAdminAllGymEquipment({ page, take });
+      let result: any = await findPagingAllGymEquipment({ page, take });
       console.log(result)
       if (result.data) {
         result = result.data;
@@ -74,7 +74,7 @@ export function useAdminEquipmentListScreen(): hookMember {
         searchType: item?.searchType || searchType,
         searchText: item?.searchText || searchText,
       };
-      let result: any = await findAdminAllGymEquipment({ page, take, ...where });
+      let result: any = await findPagingAllGymEquipment({ page, take, ...where });
   
       if (result.data) {
         result = result.data;

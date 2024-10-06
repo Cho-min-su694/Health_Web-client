@@ -46,6 +46,8 @@ export function useLoginScreen(): HookMember {
   useEffect(() => {
     if (userType === 'ADMIN') {
       router.push('/admin');
+    } else if(userType === 'BUSINESS') {
+      router.push('/business');
     } else if(userType) {
       router.push('/');
     }

@@ -180,7 +180,7 @@ const AdminEquipmentListScreen = () => {
                                     {
                                         name: '생성일',
                                         selector: 'createdAt',
-                                        minWidth: 200,
+                                        minWidth: 180,
                                         cell: ({ data }: { data: Equipment }) => {
                                             return data.createdAt? <GetSeoulTime time={data.createdAt} long /> : <></>;
                                         },
