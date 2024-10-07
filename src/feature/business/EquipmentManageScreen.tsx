@@ -9,6 +9,19 @@ import { StyledButton } from 'src/common/styledAdmin';
 import EquipmentSelectListScreen from '../equipment/EquipmentSelectListScreen';
 import GymSubHeader from 'src/common/header/GymSubHeader';
 
+const btnCss: any = {
+    fontSize: 11,
+    color: '#999',
+    width: 50,
+    alignItems: 'center',
+    textAlign: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    border: '1px solid #999',
+    borderRadius: 5,
+    padding: 3
+}
+
 const MainScreen: NextPage = () => {
     const hookMember = useEquipmentManageScreen();
 
@@ -54,7 +67,7 @@ const MainScreen: NextPage = () => {
                     css={{
                         maxWidth: 640,
                         margin: '0 auto',
-                        marginBottom:20,
+                        marginBottom: 20,
                         textAlign: 'left',
                         fontSize: 40,
                         color: '#333',
@@ -64,7 +77,7 @@ const MainScreen: NextPage = () => {
                         paddingLeft: 20,
                         width: '100%'
                     }}>
-                    {hookMember.gymData? <GymSubHeader gymData={hookMember.gymData} /> : <></>}
+                    {hookMember.gymData ? <GymSubHeader gymData={hookMember.gymData} /> : <></>}
                     <FlexRow
                         css={{ width: '100%', justifyContent: 'end', marginTop: 20 }}
                     >
@@ -78,16 +91,69 @@ const MainScreen: NextPage = () => {
                         gymId={hookMember.gymData.id}
                         takeCount={10}
                         showPageCount={10}
-                        buttonList={[
+                        headers={[
                             {
-                                buttonAction: (data) => { return hookMember.onSelectEquipment(data.equipment) },
-                                buttonCss: { color: 'green', borderColor: 'green' },
-                                buttonName: '1개 추가'
+                                name: '이름',
+                                selector: 'name',
+                                width: 80
                             },
                             {
-                                buttonAction: hookMember.onClickDelete,
-                                buttonCss: { color: 'red', borderColor: 'red' },
-                                buttonName: '1개 삭제'
+                                name: '브랜드',
+                                selector: 'brandName',
+                                width: 100
+                            },
+                            {
+                                name: '운동부위',
+                                selector: 'bodyParts',
+                                flexGrow: 1,
+                                Cell: ({ data }) => {
+                                    return <div>{data.equipment.bodyParts?.map(part => part.name).join(", ")}</div>
+                                }
+                            },
+                            {
+                                name: '수량',
+                                selector: 'count',
+                                width: 50,
+                                Cell: ({ data }) => {
+                                    return <div>{data.idList.length}</div>
+                                }
+                            },
+                            {
+                                name: '상세보기',
+                                selector: 'action',
+                                width: 80,
+                                Cell: ({ data }) => {
+                                    return <Flex
+                                        css={{
+                                            justifyContent: 'center',
+                                            gap: 3,
+                                        }}
+
+                                    >
+                                        <div
+                                            onClick={() => {
+                                                hookMember.onSelectEquipment(data.equipment)
+                                            }}
+                                            css={{
+                                                ...btnCss,
+                                                color: 'green', borderColor: 'green'
+                                            }}
+                                        >
+                                            1개 추가
+                                        </div>
+                                        <div
+                                            onClick={() => {
+                                                hookMember.onClickDelete(data)
+                                            }}
+                                            css={{
+                                                ...btnCss,
+                                                color: 'red', borderColor: 'red'
+                                            }}
+                                        >
+                                            1개 삭제
+                                        </div>
+                                    </Flex>
+                                }
                             }
                         ]}
                         ref={hookMember.refetchRef}

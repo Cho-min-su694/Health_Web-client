@@ -5,20 +5,24 @@ import { Equipment, GymEuquipmentsOnGyms } from "src/api/equipmentsApi";
 import { EmotionJSX } from "@emotion/react/types/jsx-namespace";
 import { forwardRef, useImperativeHandle } from "react";
 
+interface IHeader {
+    width?: number;
+    flexGrow?: number;
+    name: string;
+    Cell?: (props:{data: EquipmentCollection}) =>EmotionJSX.Element;
+    selector: string
+}
+
 const EquipmentsOnGymListScreen = forwardRef(({
     gymId,
     takeCount,
     showPageCount,
-    buttonList,
+    headers
 }: {
     gymId: number;
     takeCount: number;
     showPageCount: number;
-    buttonList: {
-        buttonAction: (data: EquipmentCollection) => void;
-        buttonName: string;
-        buttonCss?: any
-    }[];
+    headers: IHeader[];
 }, ref) => {
 
     const hookMember = useEquipmentsOnGymListScreen({
@@ -41,60 +45,32 @@ const EquipmentsOnGymListScreen = forwardRef(({
                 border: '1px solid #ddd',
                 borderBottom: '1px',
                 padding: '5px 10px',
-                fontSize: 12
+                fontSize: 12,
+                color: '#666',
+                lineHeight: '20px',
+                alignItems: 'center',
+                width: '100%',
+                gap: 10
             }}>
-            <FlexRow
-                css={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                <FlexCenter
-                    css={{
-                        color: "black",
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        lineHeight: '20px',
-                        width: 80,
-                    }}>
-                    이름
-                </FlexCenter>
-            </FlexRow>
-            <FlexRow
-                css={{ flexGrow: 1 }}
-            >
-                <div
-                    css={{
-                        width: 1,
-                        height: '100%',
-                        backgroundColor: '#ddd',
-                        margin: '0px 6px',
-                    }}
-                />
-                <FlexRow
-                    css={{
-                        fontSize: 12,
-                        color: '#666',
-                        lineHeight: '20px',
-                        alignItems: 'center',
-                        flexGrow: 1,
-                        gap: 10
-                    }}>
-                    <div css={{ width: 100, minWidth: 100 }}>브랜드</div>
-                    <div css={{ flexGrow: 1 }} >운동부위</div>
-                    <div css={{ width: 50, minWidth: 50 }}>수량</div>
-                </FlexRow>
-                <div
-                    css={{
-                        width: 1,
-                        height: '100%',
-                        backgroundColor: '#ddd',
-                        margin: '0px 6px',
-                    }}
-                />
-            </FlexRow>
-
-            <FlexRow
-                css={{ width: 50, minWidth: 50 }}
-            >
-                상세보기
-            </FlexRow>
+            {
+                headers.map((item, idx) => {
+                    let addCss: any = {};
+                    if (item.width) {
+                        addCss = {
+                            width: item.width, minWidth: item.width
+                        }
+                    }
+                    if (item.flexGrow) {
+                        addCss.flexGrow = item.flexGrow;
+                    }
+                    return <div
+                        key={idx.toString()}
+                        css={{ width: 50, minWidth: 50, ...addCss }}
+                    >
+                        {item.name}
+                    </div>
+                })
+            }
         </FlexRow>
         {hookMember.equipmentsCollection.slice(hookMember.page * takeCount, (hookMember.page + 1) * takeCount).map((item, index) => {
             return (
@@ -105,85 +81,36 @@ const EquipmentsOnGymListScreen = forwardRef(({
                         border: '1px solid #ddd',
                         borderBottom: '1px',
                         padding: '5px 10px',
-                        fontSize: 12
+                        fontSize: 12,
+                        color: '#666',
+                        lineHeight: '20px',
+                        alignItems: 'center',
+                        width: '100%',
+                        gap: 10
                     }}>
-                    <FlexRow
-                        css={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                        <FlexCenter
-                            css={{
-                                color: "black",
-                                fontSize: 14,
-                                fontWeight: 'bold',
-                                lineHeight: '20px',
-                                width: 80,
-                            }}>
-                            {item.equipment.name}
-                        </FlexCenter>
-                    </FlexRow>
-                    <FlexRow
-                        css={{ flexGrow: 1 }}
-                    >
-                        <div
-                            css={{
-                                width: 1,
-                                height: '100%',
-                                backgroundColor: '#ddd',
-                                margin: '0px 6px',
-                            }}
-                        />
-                        <FlexRow
-                            css={{
-                                fontSize: 12,
-                                color: '#666',
-                                lineHeight: '20px',
-                                alignItems: 'center',
-                                flexGrow: 1,
-                                gap: 5
-                            }}>
-                            <div css={{ width: 100, minWidth: 100 }}>{item.equipment.brandName}</div>
-                            <div
-                                css={{
-                                    flexGrow: 1
-                                }}
-                            >{item.equipment.bodyParts?.map(part => part.name).join(",")}</div>
-                            <div css={{ width: 50, minWidth: 50 }}>{item.idList.length}</div>
-                        </FlexRow>
-                        <div
-                            css={{
-                                width: 1,
-                                height: '100%',
-                                backgroundColor: '#ddd',
-                                margin: '0px 6px',
-                            }}
-                        />
-                    </FlexRow>
-                    <Flex
-                        css={{ justifyContent: 'center', gap: 3, width: 50, minWidth: 50 }}
-                    >
-                        {
-                            buttonList.map(({ buttonAction, buttonName, buttonCss }, idx) => <FlexRow
+                    {
+                        headers.map((inItem, idx) => {
+                            let addCss: any = {};
+                            if (inItem.width) {
+                                addCss = {
+                                    width: inItem.width, minWidth: inItem.width
+                                }
+                            }
+                            if (inItem.flexGrow) {
+                                addCss.flexGrow = inItem.flexGrow;
+                            }
+                            return <div
                                 key={idx.toString()}
-                                onClick={() => {
-                                    buttonAction(item);
-                                }}
-                                css={{
-                                    fontSize: 11,
-                                    color: '#999',
-                                    width: 50,
-                                    alignItems: 'center',
-                                    textAlign: 'center',
-                                    justifyContent: 'center',
-                                    cursor: 'pointer',
-                                    border: '1px solid #999',
-                                    borderRadius: 5,
-                                    padding: 3,
-                                    ...buttonCss,
-                                }}>
-                                <div>{buttonName}</div>
-                            </FlexRow>)
-                        }
-                    </Flex>
-
+                                css={{ width: 50, minWidth: 50, ...addCss }}
+                            >
+                                {inItem.Cell ? (
+                                    <inItem.Cell data={item} />
+                                ) : (
+                                    (item?.equipment as any)[inItem.selector]
+                                )}
+                            </div>
+                        })
+                    }
                 </FlexRow>
             );
         })}
