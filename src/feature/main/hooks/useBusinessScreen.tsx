@@ -19,21 +19,6 @@ export function useBusinessScreen(): HookMember {
     const router = useRouter();
 
     const dispatch = useDispatch<Dispatch<any>>();
-    
-    useEffect(() => {
-        let sessionUserData = sessionStorage.getItem('userData');
-        if (sessionUserData) {
-            let userData: { user: accountSlice.User; accessToken: string } =
-                JSON.parse(sessionUserData);
-            if (userData.user.userType === 'BUSINESS') {
-                dispatch(accountSlice.saveUserDataInSession(userData));
-            } else {
-                router.push('/');
-            }
-        } else {
-            router.push('/');
-        }
-    }, []);
 
     const onClickSignin = () => {
         router.push('/login');

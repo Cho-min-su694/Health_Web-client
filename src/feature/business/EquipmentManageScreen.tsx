@@ -7,6 +7,7 @@ import { useEquipmentManageScreen } from './hooks/useEquipmentManagerScreen';
 import EquipmentsOnGymListScreen from '../equipment/EquipmentsOnGymListScreen';
 import { StyledButton } from 'src/common/styledAdmin';
 import EquipmentSelectListScreen from '../equipment/EquipmentSelectListScreen';
+import GymSubHeader from 'src/common/header/GymSubHeader';
 
 const MainScreen: NextPage = () => {
     const hookMember = useEquipmentManageScreen();
@@ -46,12 +47,14 @@ const MainScreen: NextPage = () => {
                             />
                         </div>
                     }
+                    userType='BUSINESS'
 
                 />
                 <FlexCenter
                     css={{
                         maxWidth: 640,
                         margin: '0 auto',
+                        marginBottom:20,
                         textAlign: 'left',
                         fontSize: 40,
                         color: '#333',
@@ -61,8 +64,9 @@ const MainScreen: NextPage = () => {
                         paddingLeft: 20,
                         width: '100%'
                     }}>
+                    {hookMember.gymData? <GymSubHeader gymData={hookMember.gymData} /> : <></>}
                     <FlexRow
-                        css={{ width: '100%', justifyContent: 'end' }}
+                        css={{ width: '100%', justifyContent: 'end', marginTop: 20 }}
                     >
                         <StyledButton
                             onClick={() => hookMember.onClickAcitveModal(true)}
@@ -76,7 +80,7 @@ const MainScreen: NextPage = () => {
                         showPageCount={10}
                         buttonList={[
                             {
-                                buttonAction: (data)=>{return hookMember.onSelectEquipment(data.equipment)},
+                                buttonAction: (data) => { return hookMember.onSelectEquipment(data.equipment) },
                                 buttonCss: { color: 'green', borderColor: 'green' },
                                 buttonName: '1개 추가'
                             },
@@ -86,7 +90,7 @@ const MainScreen: NextPage = () => {
                                 buttonName: '1개 삭제'
                             }
                         ]}
-                        bindRefetchData={hookMember.bindRefetchData}
+                        ref={hookMember.refetchRef}
 
                     /> : <>---</>}
 

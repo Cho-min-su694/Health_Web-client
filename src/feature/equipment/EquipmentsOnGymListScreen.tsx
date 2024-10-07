@@ -3,13 +3,13 @@ import { EquipmentCollection, useEquipmentsOnGymListScreen } from "./hooks/useEq
 import Image from 'next/image';
 import { Equipment, GymEuquipmentsOnGyms } from "src/api/equipmentsApi";
 import { EmotionJSX } from "@emotion/react/types/jsx-namespace";
+import { forwardRef, useImperativeHandle } from "react";
 
-const EquipmentsOnGymListScreen = ({
+const EquipmentsOnGymListScreen = forwardRef(({
     gymId,
     takeCount,
     showPageCount,
     buttonList,
-    bindRefetchData
 }: {
     gymId: number;
     takeCount: number;
@@ -19,14 +19,18 @@ const EquipmentsOnGymListScreen = ({
         buttonName: string;
         buttonCss?: any
     }[];
-    bindRefetchData:(event:()=>void)=>void;
+}, ref) => {
 
-}) => {
     const hookMember = useEquipmentsOnGymListScreen({
         gymId,
         takeCount,
-        bindRefetchData
     });
+
+    useImperativeHandle(ref, () => ({
+        refetchData() {
+            hookMember.refetchData();
+        }
+    }));
 
     const maxPageCount = Math.min(showPageCount, Math.ceil(hookMember.totalCount / hookMember.take))
 
@@ -72,9 +76,9 @@ const EquipmentsOnGymListScreen = ({
                         flexGrow: 1,
                         gap: 10
                     }}>
-                    <div css={{ width: 100 }}>브랜드</div>
+                    <div css={{ width: 100, minWidth: 100 }}>브랜드</div>
                     <div css={{ flexGrow: 1 }} >운동부위</div>
-                    <div css={{ width: 50 }}>수량</div>
+                    <div css={{ width: 50, minWidth: 50 }}>수량</div>
                 </FlexRow>
                 <div
                     css={{
@@ -87,7 +91,7 @@ const EquipmentsOnGymListScreen = ({
             </FlexRow>
 
             <FlexRow
-                css={{ width: 50 }}
+                css={{ width: 50, minWidth: 50 }}
             >
                 상세보기
             </FlexRow>
@@ -136,15 +140,13 @@ const EquipmentsOnGymListScreen = ({
                                 flexGrow: 1,
                                 gap: 5
                             }}>
-                            <div css={{ width: 100 }}>{item.equipment.brandName}</div>
+                            <div css={{ width: 100, minWidth: 100 }}>{item.equipment.brandName}</div>
                             <div
                                 css={{
-                                    overflow: 'auto',
-                                    whiteSpace: 'nowrap',
                                     flexGrow: 1
                                 }}
                             >{item.equipment.bodyParts?.map(part => part.name).join(",")}</div>
-                            <div css={{ width: 50 }}>{item.idList.length}</div>
+                            <div css={{ width: 50, minWidth: 50 }}>{item.idList.length}</div>
                         </FlexRow>
                         <div
                             css={{
@@ -156,10 +158,10 @@ const EquipmentsOnGymListScreen = ({
                         />
                     </FlexRow>
                     <Flex
-                        css={{justifyContent:'center', gap:3}}
+                        css={{ justifyContent: 'center', gap: 3, width: 50, minWidth: 50 }}
                     >
                         {
-                            buttonList.map(({buttonAction, buttonName, buttonCss}, idx) => <FlexRow
+                            buttonList.map(({ buttonAction, buttonName, buttonCss }, idx) => <FlexRow
                                 key={idx.toString()}
                                 onClick={() => {
                                     buttonAction(item);
@@ -172,9 +174,9 @@ const EquipmentsOnGymListScreen = ({
                                     textAlign: 'center',
                                     justifyContent: 'center',
                                     cursor: 'pointer',
-                                    border:'1px solid #999',
-                                    borderRadius:5,
-                                    padding:3,
+                                    border: '1px solid #999',
+                                    borderRadius: 5,
+                                    padding: 3,
                                     ...buttonCss,
                                 }}>
                                 <div>{buttonName}</div>
@@ -243,6 +245,8 @@ const EquipmentsOnGymListScreen = ({
             </FlexRow>
         </Flex>
     </ContentFlex>
-}
+});
+
+EquipmentsOnGymListScreen.displayName = "EquipmentsOnGymListScreen";
 
 export default EquipmentsOnGymListScreen;

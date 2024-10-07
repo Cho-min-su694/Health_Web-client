@@ -4,6 +4,7 @@ import Header from 'src/common/header/Header';
 import { MainFooter } from 'src/common/footer/MainFooter';
 import { useBusinessScreen } from './hooks/useBusinessScreen';
 import { StyledLargeButton } from 'src/common/styledAdmin';
+import GymSubHeader from 'src/common/header/GymSubHeader';
 
 const BusinessScreen: NextPage = () => {
     const hookMember = useBusinessScreen();
@@ -59,6 +60,7 @@ const BusinessScreen: NextPage = () => {
                             )}
                         </Flex>
                     }
+                    userType='BUSINESS'
                 />
                 <Flex
                     css={{
@@ -71,7 +73,9 @@ const BusinessScreen: NextPage = () => {
                         paddingTop: 20,
                         paddingRight: 20,
                         paddingLeft: 20,
+                        width:'100%'
                     }}>
+                    {hookMember ? <GymSubHeader /> : <></>}
                     <FlexCenter
                         onClick={() => {
                             //
@@ -83,7 +87,7 @@ const BusinessScreen: NextPage = () => {
                             marginTop: 16,
                             cursor: 'pointer',
                             borderRadius: 8,
-                            width:'100%'
+                            width: '100%'
                         }}>
                         <div css={{ color: 'white', fontSize: 18, lineHeight: '28px' }}>
                             헬스장 기구 등록

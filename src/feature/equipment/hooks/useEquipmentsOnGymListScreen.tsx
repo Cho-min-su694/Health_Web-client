@@ -13,16 +13,15 @@ interface hookMember {
     take: number;
     totalCount: number;
     setPage: (page: number) => void;
+    refetchData: ()=>void;
 }
 
 export function useEquipmentsOnGymListScreen({
     gymId,
     takeCount,
-    bindRefetchData
 }: {
     gymId: number;
     takeCount: number;
-    bindRefetchData:(event:()=>void)=>void;
 }): hookMember {
 
     const { data: equipmentsData, refetch: refetchEquipmentsOnGyms } = useFindEquipmentsOnGymsQuery({ gymId, isDisable:false });
@@ -56,7 +55,6 @@ export function useEquipmentsOnGymListScreen({
     }
 
     useEffect(()=>{
-        bindRefetchData(refetchData);
         console.log('ready refetchData');
     },[]);
 
@@ -68,5 +66,6 @@ export function useEquipmentsOnGymListScreen({
         take,
         setPage,
         totalCount,
+        refetchData
     }
 }

@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Flex } from '../styledComponents';
 import { appContentWidth } from 'src/util/constants/style';
+import { useDispatch } from 'react-redux';
+import { Dispatch } from '@reduxjs/toolkit';
+import * as accountSlice from 'src/data/accountSlice';
+import { useRouter } from 'next/router';
 
 interface HeaderProps {
   LeftComponent?: React.ReactElement;
@@ -9,6 +13,7 @@ interface HeaderProps {
   hasBorder?: boolean;
   transparent?: boolean;
   gray?: boolean;
+  userType?:accountSlice.UserType
 }
 
 const Header = ({
@@ -17,14 +22,34 @@ const Header = ({
   RightComponent,
   hasBorder = false,
   transparent = false,
-  gray = false
+  gray = false,
+  userType
 }: HeaderProps) => {
 
-  const grayColor = gray? {backgroundColor:'#ddd'} : {};
+  const grayColor = gray ? { backgroundColor: '#ddd' } : {};
+
+  const dispatch = useDispatch<Dispatch<any>>();
+  const router = useRouter();
+
+  useEffect(() => {
+    if(userType===undefined) return;
+    let sessionUserData = sessionStorage.getItem('userData');
+    if (sessionUserData) {
+      let userData: { user: accountSlice.User; accessToken: string } =
+        JSON.parse(sessionUserData);
+      if (userData.user.userType === userType) {
+        dispatch(accountSlice.saveUserDataInSession(userData));
+      } else {
+        router.push('/');
+      }
+    } else {
+      router.push('/');
+    }
+  }, [userType]);
 
   return (
     <div
-      css={{...grayColor}}
+      css={{ ...grayColor }}
     >
       <Flex
         css={{
@@ -32,7 +57,7 @@ const Header = ({
           zIndex: transparent ? 10 : 0,
           maxWidth: appContentWidth,
           margin: '0 auto',
-          position:'relative',
+          position: 'relative',
           ...grayColor
         }}>
         <Flex
@@ -51,7 +76,7 @@ const Header = ({
               backgroundSize: 'contain',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-  
+
               position: 'absolute',
               top: '50%',
               left: '50%',

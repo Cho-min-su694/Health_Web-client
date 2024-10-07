@@ -1,7 +1,5 @@
-import { Dispatch } from '@reduxjs/toolkit';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useRef, useState } from 'react';
 import { Equipment, useFindEquipmentsOnGymsQuery, useRegisterEquipmentsOnGymsMutation, useSetDisableGymEquipmentsOnGymsMutation } from 'src/api/equipmentsApi';
 import { useGetTestQuery } from 'src/api/examplesApi';
 import { Gym, useFindGymByUserIdQuery, useFindGymQuery } from 'src/api/gymsApi';
@@ -18,24 +16,22 @@ interface HookMember {
     modalDisplay: 'flex' | 'none';
     onClickAcitveModal: (active: boolean) => void;
     onSelectEquipment: (equipment: Equipment) => void;
-    bindRefetchData:(event:()=>void)=>void;
+    refetchRef:any;
 }
 
 export function useEquipmentManageScreen(): HookMember {
     const user = useTypedSelector((state) => state.account.user);
     const router = useRouter();
 
+    const refetchRef = useRef<any>();
+
     const { data: gymData, refetch: gymDataRefetch } = useFindGymByUserIdQuery({
         userId: Number(user?.id),
     }, { skip: !(user && user.id != undefined) });
 
-    const [refetchData, setRefetchData] = useState<()=>void>();
-
     const [setDisableEquipmentsOnGyms] = useSetDisableGymEquipmentsOnGymsMutation();
 
     const [registerEquipmentOnGym] = useRegisterEquipmentsOnGymsMutation();
-
-    const dispatch = useDispatch<Dispatch<any>>();
 
     const onClickDelete = (data: EquipmentCollection) => {
         if (data.idList.length == 0) return;
@@ -44,7 +40,7 @@ export function useEquipmentManageScreen(): HookMember {
 
         result.then((data)=>{
             setModalDisplay('none');
-            refetchData?.();
+            if(refetchRef.current) refetchRef.current.refetchData?.();
         })
     }
 
@@ -66,28 +62,9 @@ export function useEquipmentManageScreen(): HookMember {
 
         result.then((data)=>{
             setModalDisplay('none');
-            refetchData?.();
+            if(refetchRef.current) refetchRef.current.refetchData?.();
         })
 
-    }
-
-    useEffect(() => {
-        let sessionUserData = sessionStorage.getItem('userData');
-        if (sessionUserData) {
-            let userData: { user: accountSlice.User; accessToken: string } =
-                JSON.parse(sessionUserData);
-            if (userData.user.userType === 'BUSINESS') {
-                dispatch(accountSlice.saveUserDataInSession(userData));
-            } else {
-                router.push('/');
-            }
-        } else {
-            router.push('/');
-        }
-    }, []);
-
-    const bindRefetchData = (event:()=>void) => {
-        setRefetchData(event);
     }
 
     useEffect(() => {
@@ -101,7 +78,6 @@ export function useEquipmentManageScreen(): HookMember {
         modalDisplay,
         onClickAcitveModal,
         onSelectEquipment,
-
-        bindRefetchData
+        refetchRef
     };
 }
