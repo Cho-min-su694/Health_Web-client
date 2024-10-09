@@ -16,6 +16,7 @@ const AdminTable = ({
   pageGroupCount = 5,
   tableCss,
   setPage,
+  headerCss
 }: {
   minWidth?: number;
   headers: any[];
@@ -26,6 +27,7 @@ const AdminTable = ({
   page: number;
   pageGroupCount?: number;
   tableCss?: (item?: any) => Interpolation<Theme>;
+  headerCss?: any
   setPage: (page: number) => void;
 }) => {
   const hookMember = useAdminTable(totalCount, take, pageGroupCount, setPage);
@@ -82,6 +84,7 @@ const AdminTable = ({
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
+                ...headerCss
               }}>
               {item?.name}
             </Flex>

@@ -3,6 +3,7 @@ import { Flex, FlexCenter, FlexRow } from 'src/common/styledComponents';
 import Header from 'src/common/header/Header';
 import { MainFooter } from 'src/common/footer/MainFooter';
 import { useMainScreen } from './hooks/useMainScreen';
+import GymMainScreen from './GymMainScreen';
 
 const MainScreen: NextPage = () => {
     const hookMember = useMainScreen();
@@ -70,8 +71,13 @@ const MainScreen: NextPage = () => {
                         paddingTop: 20,
                         paddingRight: 20,
                         paddingLeft: 20,
+                        width:'100%'
                     }}>
-                    <span css={{}}>서비스 준비중입니다.</span>
+                    {
+                        hookMember.user ?
+                            <GymMainScreen user={hookMember.user} />
+                            : <span css={{}}>서비스 준비중입니다.</span>
+                    }
 
                 </FlexCenter>
                 {/* <FlexCenter>

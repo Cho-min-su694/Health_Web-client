@@ -126,4 +126,5 @@ export interface User {
   loginType: LoginType;
   userType: UserType;
   nickname: string;
+  phone:string;
 }

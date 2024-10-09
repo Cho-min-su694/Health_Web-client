@@ -1,4 +1,4 @@
-import { ContentFlex, Flex, FlexCenter, FlexRow } from "src/common/styledComponents";
+import { CheckBoxStyleButton, ContentFlex, Flex, FlexCenter, FlexRow } from "src/common/styledComponents";
 import { EquipmentCollection, useEquipmentsOnGymListScreen } from "./hooks/useEquipmentsOnGymListScreen";
 import Image from 'next/image';
 import { Equipment, GymEuquipmentsOnGyms } from "src/api/equipmentsApi";
@@ -9,7 +9,7 @@ interface IHeader {
     width?: number;
     flexGrow?: number;
     name: string;
-    Cell?: (props:{data: EquipmentCollection}) =>EmotionJSX.Element;
+    Cell?: (props: { data: EquipmentCollection }) => EmotionJSX.Element;
     selector: string
 }
 
@@ -22,7 +22,7 @@ const EquipmentsOnGymListScreen = forwardRef(({
     gymId: number;
     takeCount: number;
     showPageCount: number;
-    headers: IHeader[];
+    headers: (IHeader | null)[];
 }, ref) => {
 
     const hookMember = useEquipmentsOnGymListScreen({
@@ -39,6 +39,21 @@ const EquipmentsOnGymListScreen = forwardRef(({
     const maxPageCount = Math.min(showPageCount, Math.ceil(hookMember.totalCount / hookMember.take))
 
     return <ContentFlex>
+        <FlexRow>
+            {hookMember.bodyPartCategoryList.map((el, i) => (
+                <CheckBoxStyleButton
+                    css={{
+                        fontSize:14,
+                        lineHeight:'auto',
+                        flexGrow:1
+                    }}
+                    onClick={() => hookMember.onChangeBodyPartCategory(el)}
+                    key={i.toString()}
+                    className={hookMember.bodyPartCategory === el ? 'active' : ''}>
+                    {el}
+                </CheckBoxStyleButton>
+            ))}
+        </FlexRow>
         <FlexRow
             css={{
                 marginTop: 10,
@@ -53,7 +68,7 @@ const EquipmentsOnGymListScreen = forwardRef(({
                 gap: 10
             }}>
             {
-                headers.map((item, idx) => {
+                headers.filter(v=>v!=null).map((item, idx) => {
                     let addCss: any = {};
                     if (item.width) {
                         addCss = {
@@ -72,7 +87,7 @@ const EquipmentsOnGymListScreen = forwardRef(({
                 })
             }
         </FlexRow>
-        {hookMember.equipmentsCollection.slice(hookMember.page * takeCount, (hookMember.page + 1) * takeCount).map((item, index) => {
+        {hookMember.dataList.map((item, index) => {
             return (
                 <FlexRow
                     key={index.toString()}
@@ -89,7 +104,7 @@ const EquipmentsOnGymListScreen = forwardRef(({
                         gap: 10
                     }}>
                     {
-                        headers.map((inItem, idx) => {
+                        headers.filter(v=>v!=null).map((inItem, idx) => {
                             let addCss: any = {};
                             if (inItem.width) {
                                 addCss = {

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { calculateProvidedBy } from '@reduxjs/toolkit/dist/query/endpointDefinitions';
-import { appContentWidth, fenxyWhite } from 'src/util/constants/style';
+import { appContentWidth, fenxyBlue, fenxyWhite } from 'src/util/constants/style';
 
 export const Flex = styled.div({
   display: 'flex',
@@ -84,4 +84,21 @@ export const Tooltiptext = styled.span({
 
   position: 'absolute',
   zIndex: 10,
+});
+
+export const CheckBoxStyleButton = styled.div({
+  width: 'auto',
+  marginLeft: -1,
+  lineHeight: '36px',
+  border: '1px solid #eee',
+  display: 'inline-flex',
+  justifyContent: 'center',
+  color: '#999',
+  // cursor: 'pointer',
+  '&.active': {
+      background: fenxyBlue,
+      borderColor: fenxyBlue,
+      color: 'white',
+  },
+  cursor: 'pointer'
 });

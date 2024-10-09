@@ -22,7 +22,7 @@ const btnCss: any = {
     padding: 3
 }
 
-const MainScreen: NextPage = () => {
+const EquipmentManageScreen: NextPage = () => {
     const hookMember = useEquipmentManageScreen();
 
     return (
@@ -214,4 +214,4 @@ const MainScreen: NextPage = () => {
         </Flex>
     );
 };
-export default MainScreen;
+export default EquipmentManageScreen;

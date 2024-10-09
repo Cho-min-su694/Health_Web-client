@@ -12,6 +12,7 @@ interface HookMember {
     onClickSignin(): void;
     onClickLogout(): void;
     onClickRegisterEquipmentsOnGyms():void;
+    onClickRegisterMembership():void;
 }
 
 export function useBusinessScreen(): HookMember {
@@ -28,15 +29,21 @@ export function useBusinessScreen(): HookMember {
         router.push('/business/equipments')
     }
 
+    const onClickRegisterMembership = () => {
+        router.push('/business/membership')
+    }
+
     const onClickLogout = () => {
         // id,pw를 가져오고 슬라이스의 로그인으로 넘김
         dispatch(accountSlice.logout());
+        router.push('/');
     };
 
     return {
         user,
         onClickSignin,
         onClickLogout,
-        onClickRegisterEquipmentsOnGyms
+        onClickRegisterEquipmentsOnGyms,
+        onClickRegisterMembership
     };
 }

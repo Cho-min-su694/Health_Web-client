@@ -15,6 +15,7 @@ import { usersApi } from './api/usersApi';
 import { gymsApi } from './api/gymsApi';
 import { bodyPartsApi } from './api/bodyPartsApi';
 import { equipmentsApi } from './api/equipmentsApi';
+import { gymMembershipsApi } from './api/gymMembershipsApi';
 
 const initialState = {};
 
@@ -24,6 +25,7 @@ const reducer = combineReducers({
     [gymsApi.reducerPath]: gymsApi.reducer,
     [bodyPartsApi.reducerPath]: bodyPartsApi.reducer,
     [equipmentsApi.reducerPath]: equipmentsApi.reducer,
+    [gymMembershipsApi.reducerPath]: gymMembershipsApi.reducer,
     account: accountSlice,
 });
 
@@ -40,6 +42,7 @@ function initStore(preloadedState = initialState): Store<RootState> {
       .concat(gymsApi.middleware)
       .concat(bodyPartsApi.middleware)
       .concat(equipmentsApi.middleware)
+      .concat(gymMembershipsApi.middleware)
     ,
     devTools: process.env.NODE_ENV !== 'production',
   });

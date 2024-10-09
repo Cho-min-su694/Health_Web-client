@@ -113,9 +113,9 @@ export const equipmentsApi = createApi({
       }),
     }),
 
-    findEquipmentsOnGyms: builder.query<GymEuquipmentsOnGyms[], { 
+    findEquipmentsOnGyms: builder.query<GymEuquipmentsOnGyms[], {
       gymId: number
-      isDisable?:boolean
+      isDisable?: boolean
     }>({
       query: (args) => ({
         method: 'GET',
@@ -156,10 +156,65 @@ export const equipmentsApi = createApi({
         url: `admin?adminId=${arg.adminId}&id=${arg.id}`,
       }),
     }),
+
+    createGymEquipmentUserHistory: builder.mutation<
+      unknown,
+      {
+        gymEuquipmentsOnGymsId: number;
+        userId: number;
+      }
+    >({
+      query: (arg) => ({
+        method: 'POST',
+        url: `create/history/${arg.gymEuquipmentsOnGymsId}`,
+        body: { userId: arg.userId },
+      }),
+    }),
+    createGymEquipmentUserHistoryByEquipmentId: builder.mutation<
+      unknown,
+      {
+        equipmentId: number;
+        userId: number;
+      }
+    >({
+      query: (arg) => ({
+        method: 'POST',
+        url: `create/history/${arg.equipmentId}/equipment`,
+        body: { userId: arg.userId },
+      }),
+    }),
+    findValidGymEquipmentUserHistory: builder.query<GymEquipmentUserHistory, {
+      gymId: number;
+      userId: number;
+    }>({
+      query: (args) => ({
+        method: 'GET',
+        url: `history/valid/${args.userId}?gymId=${args.gymId}`,
+      }),
+    }),
+    findGymEquipmentUserHistoryByGymId: builder.query<GymEquipmentUserHistory[], {
+      gymId: number;
+    }>({
+      query: (args) => ({
+        method: 'GET',
+        url: `history/gym/${args.gymId}`,
+      }),
+    }),
+    endGymEquipmentUserHistoryByUserId: builder.mutation<
+      GymEquipmentUserHistory[],
+      {
+        userId: number;
+      }
+    >({
+      query: (arg) => ({
+        method: 'PATCH',
+        url: `history/user/${arg.userId}`,
+      }),
+    }),
   }),
 });
 
-export const { useCreateEquipmentMutation, useFindPagingAllEquipmentsMutation, useFindDuplicateEquipmentDataMutation, useFindAllEquipmentsQuery, useFindEquipmentQuery, useRemoveEquipmentMutation, useUpdateEquipmentMutation, useRemoveEquipmentByAdminMutation, useUpsertEquipmentImageMutation, useLazyFindEquipmentQuery, useRegisterEquipmentsOnGymsMutation, useFindEquipmentsOnGymsQuery, useSetDisableGymEquipmentsOnGymsMutation } = equipmentsApi;
+export const { useCreateEquipmentMutation, useFindPagingAllEquipmentsMutation, useFindDuplicateEquipmentDataMutation, useFindAllEquipmentsQuery, useFindEquipmentQuery, useRemoveEquipmentMutation, useUpdateEquipmentMutation, useRemoveEquipmentByAdminMutation, useUpsertEquipmentImageMutation, useLazyFindEquipmentQuery, useRegisterEquipmentsOnGymsMutation, useFindEquipmentsOnGymsQuery, useSetDisableGymEquipmentsOnGymsMutation, useCreateGymEquipmentUserHistoryMutation, useFindValidGymEquipmentUserHistoryQuery, useEndGymEquipmentUserHistoryByUserIdMutation, useFindGymEquipmentUserHistoryByGymIdQuery, useCreateGymEquipmentUserHistoryByEquipmentIdMutation } = equipmentsApi;
 
 export const createEquipmentData = async (
   userId: number,
@@ -224,6 +279,17 @@ export type GymEuquipmentsOnGyms = {
 
   assignBy: number;
   assignUser?: User;
+}
+
+export type GymEquipmentUserHistory = {
+  id: number;
+  gymEuquipmentsOnGymsId: number;
+  userId: number;
+  usedAt: Date | string;
+  endAt?: Date | string;
+
+  GymEuquipmentsOnGyms?: GymEuquipmentsOnGyms;
+  User?: User;
 }
 
 

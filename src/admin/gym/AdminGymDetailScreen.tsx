@@ -283,6 +283,46 @@ const AdminGymDetailScreen = () => {
                         </Flex>
                         <Flex css={{ width: 'calc(100%)' }}>
                             <TheadSmall>헬스장 이미지</TheadSmall>
+                            <FlexRow>
+                                <input
+                                    type="file"
+                                    id="gymPhoto"
+                                    css={{ display: 'none' }}
+                                    onChange={hookMember.onChangeGymPhoto}
+                                />
+                                <label htmlFor="gymPhoto" css={{ flex: 1 }}>
+                                    <FlexCenter
+                                        css={{
+                                            height: 40,
+                                            flex: 1,
+                                            borderRadius: 10,
+                                            cursor: 'pointer',
+                                            backgroundColor: '#666',
+                                        }}>
+                                        <FlexRow css={{ alignItems: 'center' }}>
+                                            <div //사업자
+                                                css={{
+                                                    width: 30,
+                                                    height: 27,
+                                                    backgroundImage: `url(/image/signup/camera_icon.png)`,
+                                                    backgroundSize: 'contain',
+                                                    backgroundPosition: 'center',
+                                                    backgroundRepeat: 'no-repeat',
+                                                    marginRight: 5,
+                                                }}
+                                            />
+                                            <div
+                                                css={{
+                                                    marginLeft: 6,
+                                                    fontSize: 17,
+                                                    color: 'white',
+                                                }}>
+                                                헬스장 로고 사진 첨부하기
+                                            </div>
+                                        </FlexRow>
+                                    </FlexCenter>
+                                </label>
+                            </FlexRow>
                             <Flex css={{ color: '#999' }}>
                                 {hookMember.gymPreviewPhoto && (
                                     <Image

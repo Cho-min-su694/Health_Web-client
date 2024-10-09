@@ -48,6 +48,12 @@ export const bodyPartsApi = createApi({
         url: '',
       }),
     }),
+    findBodyPartCategories: builder.query<{category:string}[], void>({
+      query: () => ({
+        method: 'GET',
+        url: 'category',
+      }),
+    }),
     removeBodyPart: builder.mutation<BodyPart, { id: number }>({
       query: (arg) => ({
         method: 'DELETE',
@@ -57,7 +63,7 @@ export const bodyPartsApi = createApi({
   }),
 });
 
-export const { useCreateBodyPartMutation, useFindAllBodyPartsQuery, useFindBodyPartQuery, useUpdateBodyPartMutation, useRemoveBodyPartMutation } = bodyPartsApi;
+export const { useCreateBodyPartMutation, useFindAllBodyPartsQuery, useFindBodyPartQuery, useUpdateBodyPartMutation, useRemoveBodyPartMutation, useFindBodyPartCategoriesQuery } = bodyPartsApi;
 
 export interface BodyPart {
   id?: number;

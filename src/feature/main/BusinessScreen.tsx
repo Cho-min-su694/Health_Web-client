@@ -94,6 +94,24 @@ const BusinessScreen: NextPage = () => {
                         </div>
                     </FlexCenter>
 
+                    <FlexCenter
+                        onClick={() => {
+                            //
+                            hookMember.onClickRegisterMembership();
+                        }}
+                        css={{
+                            backgroundColor: 'pink',
+                            padding: 11,
+                            marginTop: 16,
+                            cursor: 'pointer',
+                            borderRadius: 8,
+                            width: '100%'
+                        }}>
+                        <div css={{ color: 'white', fontSize: 18, lineHeight: '28px' }}>
+                            멤버쉽 등록
+                        </div>
+                    </FlexCenter>
+
                 </Flex>
                 {/* <FlexCenter>
             {hookMember.debugText}

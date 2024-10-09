@@ -48,7 +48,7 @@ interface hookMember {
   onChangeCompanyFax: (companyFax: string) => void;
   onChangeCompanyEmail: (companyEmail: string) => void;
 
-  // onChangeGymPhoto: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChangeGymPhoto: (e: ChangeEvent<HTMLInputElement>) => void;
 
   onClickRouterGym: () => void;
   onClickSaveGym: () => void;
@@ -225,9 +225,9 @@ export function useAdminGymDetailScreen(): hookMember {
       setSubAddress(gym.subAddress);
       setPostCode(gym.postcode);
 
-      if(gym.GymImage && gym.GymImage[0]) {
+      if (gym.GymImage && gym.GymImage[0]) {
         setGymPreviewPhoto(
-          gym.GymImage[0].url?.replace (/^/,`${rootUrl}/`) || ''
+          gym.GymImage[0].url?.replace(/^/, `${rootUrl}/`) || ''
         );
       }
 
@@ -376,7 +376,7 @@ export function useAdminGymDetailScreen(): hookMember {
     }
 
     if (gymId) {
-      const companyInfo: any = await updateGymByAdmin(
+      updateGymByAdmin(
         {
           id: gymId,
           body: {
@@ -392,33 +392,41 @@ export function useAdminGymDetailScreen(): hookMember {
             postcode: postCode,
           }
         },
-      );
+      ).then(async (companyInfo: any) => {
 
-      if (companyInfo) {
-        // if (gymPhoto) {
-        //   const companyInfoId: number = companyInfo.id as number;
+        const companyInfoId: number = companyInfo.data?.id ?? -1;
+        if (companyInfoId >= 0) {
+          if (gymPhoto) {
 
-        //   const form = new FormData();
-        //   form.append('gymImage', gymPhoto);
-        //   const result = await upsertGymImage({
-        //     gymId:companyInfoId,
-        //     form:form
-        //   });
+            const form = new FormData();
+            form.append('gymImage', gymPhoto);
+            const result: any = await upsertGymImage({
+              gymId: companyInfoId,
+              form: form
+            });
 
-        // }
+            if (result?.data) {
+              isModified = true;
+            } else {
+              alert("이미지 업로드 문제 발생");
+            }
 
-        isModified = true;
+          } else {
+            isModified = true;
+          }
 
-      }
+        }
 
+
+        if (isModified) {
+          if (confirm('수성되었습니다!(확인 시 목록으로)')) router.back();
+        } else {
+          alert("문제가 발생하였습니다.");
+        }
+
+      })
     }
 
-
-    if (isModified) {
-      if (confirm('수정되었습니다!(확인 시 목록으로)')) router.back();
-      gymRefetch();
-
-    }
   };
 
   return {
@@ -463,7 +471,7 @@ export function useAdminGymDetailScreen(): hookMember {
     onChangeCompanyFax,
     onChangeCompanyEmail,
 
-    // onChangeGymPhoto,
+    onChangeGymPhoto,
 
     onClickPostCode,
     onCompletePostCode,

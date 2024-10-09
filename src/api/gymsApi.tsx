@@ -29,22 +29,6 @@ export const gymsApi = createApi({
       }),
     }),
     //
-    createGymImage: builder.mutation<
-      unknown,
-      {
-        id: number;
-        body: {
-          businessNumberImage: File;
-          bankCopyImage: File;
-        };
-      }
-    >({
-      query: (arg) => ({
-        method: 'POST',
-        url: `${arg.id}/image`,
-        body: arg.body,
-      }),
-    }),
     // NOTE 유저생성시 중복확인 // 아이디, 닉네임, 상호명 등등
     findDuplicateGymData: builder.mutation<
       unknown,
@@ -133,7 +117,7 @@ export const gymsApi = createApi({
   }),
 });
 
-export const { useCreateGymImageMutation, useCreateGymInfoMutation, useUpdateGymByIdMutation, useFindDuplicateGymDataMutation, useFindAdminAllGymsMutation, useRemoveGymByAdminMutation, useFindGymQuery, useUpsertGymImageMutation, useFindGymByUserIdQuery } = gymsApi;
+export const { useCreateGymInfoMutation, useUpdateGymByIdMutation, useFindDuplicateGymDataMutation, useFindAdminAllGymsMutation, useRemoveGymByAdminMutation, useFindGymQuery, useUpsertGymImageMutation, useFindGymByUserIdQuery } = gymsApi;
 
 export type Gym = {
   id?: number
