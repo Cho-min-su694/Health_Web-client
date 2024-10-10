@@ -1,5 +1,4 @@
 import { Dispatch } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
