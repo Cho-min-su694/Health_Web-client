@@ -36,6 +36,11 @@ const EquipmentsOnGymListScreen = forwardRef(({
         }
     }));
 
+    const filteredHeader = headers.filter((v, i, a) => {
+        if (v == null) return false;
+        return true;
+    }) as IHeader[];
+
     const maxPageCount = Math.min(showPageCount, Math.ceil(hookMember.totalCount / hookMember.take))
 
     return <ContentFlex>
@@ -43,9 +48,9 @@ const EquipmentsOnGymListScreen = forwardRef(({
             {hookMember.bodyPartCategoryList.map((el, i) => (
                 <CheckBoxStyleButton
                     css={{
-                        fontSize:14,
-                        lineHeight:'auto',
-                        flexGrow:1
+                        fontSize: 14,
+                        lineHeight: 'auto',
+                        flexGrow: 1
                     }}
                     onClick={() => hookMember.onChangeBodyPartCategory(el)}
                     key={i.toString()}
@@ -68,7 +73,7 @@ const EquipmentsOnGymListScreen = forwardRef(({
                 gap: 10
             }}>
             {
-                headers.filter(v=>v!=null).map((item, idx) => {
+                filteredHeader.map((item, idx) => {
                     let addCss: any = {};
                     if (item.width) {
                         addCss = {
@@ -104,7 +109,7 @@ const EquipmentsOnGymListScreen = forwardRef(({
                         gap: 10
                     }}>
                     {
-                        headers.filter(v=>v!=null).map((inItem, idx) => {
+                        filteredHeader.map((inItem, idx) => {
                             let addCss: any = {};
                             if (inItem.width) {
                                 addCss = {
