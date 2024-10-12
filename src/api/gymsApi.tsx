@@ -98,6 +98,29 @@ export const gymsApi = createApi({
       }),
     }),
 
+    findAllGyms: builder.query<Gym[], void>({
+      query: (arg) => ({
+        method: 'GET',
+        url: ``,
+      }),
+    }),
+
+    findTestGym: builder.query<Gym, void>({
+      query: (arg) => ({
+        method: 'GET',
+        url: `test`,
+      }),
+    }),
+
+    findPublicGyms: builder.query<Gym, {
+      id:number;
+    }>({
+      query: (arg) => ({
+        method: 'GET',
+        url: `test/${arg.id}`,
+      }),
+    }),
+
 
     // 개별 삭제
     removeGymByAdmin: builder.mutation<
@@ -117,7 +140,7 @@ export const gymsApi = createApi({
   }),
 });
 
-export const { useCreateGymInfoMutation, useUpdateGymByIdMutation, useFindDuplicateGymDataMutation, useFindAdminAllGymsMutation, useRemoveGymByAdminMutation, useFindGymQuery, useUpsertGymImageMutation, useFindGymByUserIdQuery } = gymsApi;
+export const { useCreateGymInfoMutation, useUpdateGymByIdMutation, useFindDuplicateGymDataMutation, useFindAdminAllGymsMutation, useRemoveGymByAdminMutation, useFindGymQuery, useUpsertGymImageMutation, useFindGymByUserIdQuery, useFindAllGymsQuery, useFindTestGymQuery, useFindPublicGymsQuery } = gymsApi;
 
 export type Gym = {
   id?: number
@@ -181,4 +204,4 @@ export type GymUpdateInput = {
   isDisable?: boolean
 };
 
-export type GymImage = {gymId?:string} & ImageType;
+export type GymImage = { gymId?: string } & ImageType;

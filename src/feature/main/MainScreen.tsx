@@ -4,6 +4,7 @@ import Header from 'src/common/header/Header';
 import { MainFooter } from 'src/common/footer/MainFooter';
 import { useMainScreen } from './hooks/useMainScreen';
 import GymMainScreen from './GymMainScreen';
+import GymIntroScreen from './GymIntroScreen';
 
 const MainScreen: NextPage = () => {
     const hookMember = useMainScreen();
@@ -65,7 +66,7 @@ const MainScreen: NextPage = () => {
                         maxWidth: 640,
                         margin: '0 auto',
                         textAlign: 'left',
-                        fontSize: 40,
+                        fontSize: 30,
                         color: '#333',
                         fontWeight: 400,
                         paddingTop: 20,
@@ -76,7 +77,10 @@ const MainScreen: NextPage = () => {
                     {
                         hookMember.user ?
                             <GymMainScreen user={hookMember.user} />
-                            : <span css={{}}>서비스 준비중입니다.</span>
+                            : hookMember.testGym? <GymIntroScreen
+                                gymId={hookMember.testGym.id as number}
+                            
+                            /> : <>페이지 요청 중</>
                     }
 
                 </FlexCenter>

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useGetTestQuery } from 'src/api/examplesApi';
+import { Gym, useFindAllGymsQuery, useFindTestGymQuery } from 'src/api/gymsApi';
 import * as accountSlice from 'src/data/accountSlice';
 import { useTypedSelector } from 'src/store';
 import { redirectUrl, rootUrl } from 'src/util/constants/app';
@@ -11,6 +12,8 @@ interface HookMember {
     user: accountSlice.User | undefined;
     onClickSignin(): void;
     onClickLogout(): void;
+
+    testGym: Gym | undefined;
 }
 
 export function useMainScreen(): HookMember {
@@ -18,6 +21,8 @@ export function useMainScreen(): HookMember {
     const router = useRouter();
 
     const dispatch = useDispatch<Dispatch<any>>();
+
+    const {data:testGym, refetch:refetchGym} = useFindTestGymQuery();
 
     useEffect(() => {
         let sessionUserData = sessionStorage.getItem('userData');
@@ -41,6 +46,8 @@ export function useMainScreen(): HookMember {
     return {
         user,
         onClickSignin,
-        onClickLogout
+        onClickLogout,
+
+        testGym,
     };
 }
