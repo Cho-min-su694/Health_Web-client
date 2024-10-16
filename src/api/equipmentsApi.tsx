@@ -186,12 +186,24 @@ export const equipmentsApi = createApi({
     findValidGymEquipmentUserHistory: builder.query<GymEquipmentUserHistory, {
       gymId: number;
       userId: number;
+      all?: boolean;
     }>({
       query: (args) => ({
         method: 'GET',
-        url: `history/valid/${args.userId}?gymId=${args.gymId}`,
+        url: `history/valid/${args.userId}?gymId=${args.gymId}&all=${args.all}`,
       }),
     }),
+
+    findSpecGymEquipmentUserHistory: builder.query<GymEquipmentUserHistory[], {
+      gymId: number;
+      userId: number;
+    }>({
+      query: (args) => ({
+        method: 'GET',
+        url: `history/${args.userId}?gymId=${args.gymId}`,
+      }),
+    }),
+
     findGymEquipmentUserHistoryByGymId: builder.query<GymEquipmentUserHistory[], {
       gymId: number;
     }>({
@@ -214,7 +226,7 @@ export const equipmentsApi = createApi({
   }),
 });
 
-export const { useCreateEquipmentMutation, useFindPagingAllEquipmentsMutation, useFindDuplicateEquipmentDataMutation, useFindAllEquipmentsQuery, useFindEquipmentQuery, useRemoveEquipmentMutation, useUpdateEquipmentMutation, useRemoveEquipmentByAdminMutation, useUpsertEquipmentImageMutation, useLazyFindEquipmentQuery, useRegisterEquipmentsOnGymsMutation, useFindEquipmentsOnGymsQuery, useSetDisableGymEquipmentsOnGymsMutation, useCreateGymEquipmentUserHistoryMutation, useFindValidGymEquipmentUserHistoryQuery, useEndGymEquipmentUserHistoryByUserIdMutation, useFindGymEquipmentUserHistoryByGymIdQuery, useCreateGymEquipmentUserHistoryByEquipmentIdMutation } = equipmentsApi;
+export const { useCreateEquipmentMutation, useFindPagingAllEquipmentsMutation, useFindDuplicateEquipmentDataMutation, useFindAllEquipmentsQuery, useFindEquipmentQuery, useRemoveEquipmentMutation, useUpdateEquipmentMutation, useRemoveEquipmentByAdminMutation, useUpsertEquipmentImageMutation, useLazyFindEquipmentQuery, useRegisterEquipmentsOnGymsMutation, useFindEquipmentsOnGymsQuery, useSetDisableGymEquipmentsOnGymsMutation, useCreateGymEquipmentUserHistoryMutation, useFindValidGymEquipmentUserHistoryQuery, useEndGymEquipmentUserHistoryByUserIdMutation, useFindGymEquipmentUserHistoryByGymIdQuery, useCreateGymEquipmentUserHistoryByEquipmentIdMutation, useFindSpecGymEquipmentUserHistoryQuery } = equipmentsApi;
 
 export const createEquipmentData = async (
   userId: number,

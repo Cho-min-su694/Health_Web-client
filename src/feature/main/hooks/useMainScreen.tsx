@@ -12,6 +12,7 @@ interface HookMember {
     user: accountSlice.User | undefined;
     onClickSignin(): void;
     onClickLogout(): void;
+    onClickMyPage(): void;
 
     testGym: Gym | undefined;
 }
@@ -38,15 +39,22 @@ export function useMainScreen(): HookMember {
         router.push('/login');
     };
 
+    const onClickMyPage = () => {
+        router.push('/my/'+testGym?.id);
+    };
+
     const onClickLogout = () => {
         // id,pw를 가져오고 슬라이스의 로그인으로 넘김
         dispatch(accountSlice.logout());
     };
 
+    
+
     return {
         user,
         onClickSignin,
         onClickLogout,
+        onClickMyPage,
 
         testGym,
     };

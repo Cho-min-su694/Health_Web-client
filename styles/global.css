@@ -67,3 +67,7 @@ button {
 button:active {
   opacity: 0.7;
 }
+
+div.fc.fc-media-screen {
+  width: 100%;
+}

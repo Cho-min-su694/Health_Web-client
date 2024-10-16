@@ -16,3 +16,30 @@ export const getCalculatedEndDay = (membershipList:GymMembership[], userId:numbe
 
     return endDay;
 }
+
+export const dateFormater = (format: string, date: Date = new Date()): string => {
+    const _date = date
+
+    return format.replace(/(yyyy|mm|dd|MM|DD|H|i|s)/g, (t: string): any => {
+        switch (t) {
+            case "yyyy":
+                return _date.getFullYear();
+            case "mm":
+                return _date.getMonth() + 1;
+            case "dd":
+                return _date.getDate();
+            case "MM":
+                return String(_date.getMonth() + 1).padStart(2,"0");
+            case "DD":
+                return String(_date.getDate()).padStart(2,"0");
+            case "H":
+                return String(_date.getHours()).padStart(2,"0");
+            case "i":
+                return String(_date.getMinutes()).padStart(2,"0");
+            case "s":
+                return String(_date.getSeconds()).padStart(2,"0");
+            default:
+                return "";
+        }
+    });
+};

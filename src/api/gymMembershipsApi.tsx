@@ -71,11 +71,12 @@ export const gymMembershipsApi = createApi({
       {
         gymId: number;
         userId: number;
+        all?: boolean;
       }
     >({
       query: (arg) => ({
         method: 'GET',
-        url: `gym/${arg.gymId}/${arg.userId}`
+        url: `usergym/${arg.gymId}?userId=${arg.userId}&all=${arg.all}`
       })
     }),
 
@@ -143,13 +144,27 @@ export const gymMembershipsApi = createApi({
     findValidGymAccessHistory: builder.query<
       GymAccessHistory,
       {
-        gymId: number,
-        userId: number
+        gymId: number;
+        userId: number;
+        all?:boolean;
       }
     >({
       query: (arg) => ({
         method: 'GET',
-        url: `access/valid/${arg.gymId}/${arg.userId}`
+        url: `access/valid/${arg.gymId}/${arg.userId}?all=${arg.all}`
+      })
+    }),
+
+    findGymAccessHistoryList: builder.query<
+      GymAccessHistory[],
+      {
+        gymId: number;
+        userId: number;
+      }
+    >({
+      query: (arg) => ({
+        method: 'GET',
+        url: `access/history/${arg.gymId}/${arg.userId}`
       })
     }),
 
@@ -183,7 +198,7 @@ export const gymMembershipsApi = createApi({
 
 });
 
-export const { useCancelGymMembershipMutation, useCreateGymMembershipMutation, useExtendGymMembershipMutation, useFindPagingAllGymMembershipsMutation, useFindMembershipByGymIdQuery, useFindUserGymMembershipQuery, useFindPagingGymMembershipsMutation, useFindGymMembershipByUserIdQuery, useCreateGymAccessHistoryMutation, useFindValidGymAccessHistoryQuery, useUpdateGymAccessHistoryMutation, useExitGymMutation } = gymMembershipsApi;
+export const { useCancelGymMembershipMutation, useCreateGymMembershipMutation, useExtendGymMembershipMutation, useFindPagingAllGymMembershipsMutation, useFindMembershipByGymIdQuery, useFindUserGymMembershipQuery, useFindPagingGymMembershipsMutation, useFindGymMembershipByUserIdQuery, useCreateGymAccessHistoryMutation, useFindValidGymAccessHistoryQuery, useUpdateGymAccessHistoryMutation, useExitGymMutation, useFindGymAccessHistoryListQuery } = gymMembershipsApi;
 
 export type CreateGymMembershipDto = {
   createdAt?: Date | string;
